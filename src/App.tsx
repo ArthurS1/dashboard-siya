@@ -16,6 +16,10 @@ import {
   theme,
 } from "@chakra-ui/react"
 
+const redirect = () => {
+  window.location.href = "https://siya-eip.com/"
+}
+
 export const App = () => (
   <ChakraProvider theme={theme}>
     <Flex p='4' flexDirection='row' justifyContent='space-between' alignItems='center' w='100%'>
@@ -24,7 +28,7 @@ export const App = () => (
         <Text fontSize='sm'>Projet Siya EIP 2024</Text>
       </Box>
       <Box>
-        <Button mx='1'>Retour au site</Button>
+        <Button mx='1' onClick={redirect}>Retour au site</Button>
       </Box>
     </Flex>
     <Tabs>
