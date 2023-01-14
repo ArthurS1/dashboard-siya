@@ -7,8 +7,9 @@ import {
 import axios from "axios"
 import React from "react"
 import Config from "./Config.json"
+import AdminData from "./AdminData.interface"
 
-export const Authentication = () => {
+export const Authentication = ({dataSetter}: {dataSetter: (a: AdminData) => void}) => {
   const toast = useToast()
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
@@ -30,7 +31,12 @@ export const Authentication = () => {
         status: 'success',
         duration: 9000,
         isClosable: true,
-      })}, (err) => {
+      })
+      dataSetter({
+        email,
+        pass: password,
+      })
+      }, (err) => {
       console.log(err)
       toast({
         title: 'Erreur',
@@ -49,6 +55,10 @@ export const Authentication = () => {
       status: 'success',
       duration: 9000,
       isClosable: true,
+    })
+    dataSetter({
+      email: '',
+      pass: ''
     })
   }
 

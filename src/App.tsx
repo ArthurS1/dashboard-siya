@@ -15,13 +15,16 @@ import {
   Button,
   theme,
 } from "@chakra-ui/react"
+import AdminData from "./AdminData.interface"
 
 const redirect = () => {
   window.location.href = "https://siya-eip.com/"
 }
 
-export const App = () => (
-  <ChakraProvider theme={theme}>
+export const App = () => {
+  const [adminData, setAdminData] = React.useState<AdminData | undefined>(undefined)
+
+  return (<ChakraProvider theme={theme}>
     <Flex p='4' flexDirection='row' justifyContent='space-between' alignItems='center' w='100%'>
       <Box>
         <Heading>Dashboard Administrateur</Heading>
@@ -39,15 +42,15 @@ export const App = () => (
       </TabList>
       <TabPanels>
         <TabPanel>
-          <Authentication></Authentication>
+          <Authentication dataSetter={setAdminData}></Authentication>
         </TabPanel>
         <TabPanel>
-          <ListView></ListView>
+          <ListView data={adminData}></ListView>
         </TabPanel>
         <TabPanel>
           <p>Graphique</p>
         </TabPanel>
       </TabPanels>
     </Tabs>
-  </ChakraProvider>
-)
+  </ChakraProvider>)
+}
