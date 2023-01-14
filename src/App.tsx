@@ -16,6 +16,7 @@ import {
   theme,
 } from "@chakra-ui/react"
 import AdminData from "./AdminData.interface"
+import { SearchFeedback } from "./SearchFeedback"
 
 const redirect = () => {
   window.location.href = "https://siya-eip.com/"
@@ -39,6 +40,7 @@ export const App = () => {
         <Tab>Connexion</Tab>
         <Tab>Liste</Tab>
         <Tab>Graphique</Tab>
+        <Tab>Recherche</Tab>
       </TabList>
       <TabPanels>
         <TabPanel>
@@ -49,6 +51,9 @@ export const App = () => {
         </TabPanel>
         <TabPanel>
           <p>Graphique</p>
+        </TabPanel>
+        <TabPanel>
+          <SearchFeedback data={adminData}></SearchFeedback>
         </TabPanel>
       </TabPanels>
     </Tabs>

@@ -14,14 +14,7 @@ import axios from "axios"
 import Config from "./Config.json"
 import React from "react"
 import AdminData from "./AdminData.interface"
-
-interface DataRow {
-  id: number,
-  content: string,
-  email: string,
-  date: string,
-  importance: number,
-}
+import DataRow from "./DataRow.interface"
 
 enum Sorting {
   LowToHigh,
