@@ -85,6 +85,7 @@ export const SearchFeedback = ({data} : {data: AdminData | undefined}) => {
        {tableList}
       </Tbody>
     </Table>
+    <p>nombre de résultats: {tableList?.length}</p>
     </Box>
   )
 }
