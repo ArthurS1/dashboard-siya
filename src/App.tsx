@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react"
 import AdminData from "./AdminData.interface"
 import { SearchFeedback } from "./SearchFeedback"
+import { ChartView } from "./ChartView"
 
 const redirect = () => {
   window.location.href = "https://siya-eip.com/"
@@ -50,7 +51,7 @@ export const App = () => {
           <ListView data={adminData}></ListView>
         </TabPanel>
         <TabPanel>
-          <p>Graphique</p>
+          <ChartView data={adminData}></ChartView>
         </TabPanel>
         <TabPanel>
           <SearchFeedback data={adminData}></SearchFeedback>
