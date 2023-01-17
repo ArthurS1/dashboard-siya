@@ -16,5 +16,5 @@ COPY . .
 
 # build app for production with minification
 
-RUN [ "yarn", "run", "build" ]
+# RUN [ "yarn", "run", "build" ]
 CMD [ "yarn", "run", "start" ]
