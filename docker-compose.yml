@@ -21,35 +21,35 @@ services:
             - "traefik.enable=true" # <== Enabling traefik to manage this container
             - "traefik.docker.network=${TRAEFIK_NETWORK_NAME}" # <== The network traefik will operate on the docker network named traefik-net
             # HTTP to HTTPS settings
-            - "traefik.http.routers.front-secure.entrypoints=websecure" # <== The entrypoint HTTPS
-            - "traefik.http.routers.front-secure.rule=Host(`${DASHBOARD_SUBDOMAIN}.${DOMAIN_NAME}`)" # <== The rule to match the request
+            - "traefik.http.routers.dashboard-secure.entrypoints=websecure" # <== The entrypoint HTTPS
+            - "traefik.http.routers.dashboard-secure.rule=Host(`${DASHBOARD_SUBDOMAIN}.${DOMAIN_NAME}`)" # <== The rule to match the request
             # Let's Encrypt settings
-            - "traefik.http.routers.front-secure.tls=true" # Enable TLS
-            - "traefik.http.routers.front-secure.tls.certresolver=lets-encrypt" # <== The certificate resolver to use
+            - "traefik.http.routers.dashboard-secure.tls=true" # Enable TLS
+            - "traefik.http.routers.dashboard-secure.tls.certresolver=lets-encrypt" # <== The certificate resolver to use
             # Traefik compress settings
-            - "traefik.http.middlewares.front-compress.compress=true" # <== Enable compression
+            - "traefik.http.middlewares.dashboard-compress.compress=true" # <== Enable compression
             # Traefik header settings
             ## SSL settings
-            - "traefik.http.middlewares.front-header.headers.sslRedirect=true" # <== Enabling SSL redirection
+            - "traefik.http.middlewares.dashboard-header.headers.sslRedirect=true" # <== Enabling SSL redirection
             ## STS settings
-            - "traefik.http.middlewares.front-header.headers.stsSeconds=31536000" # <== Setting STS seconds
-            - "traefik.http.middlewares.front-header.headers.stsIncludeSubdomains=true" # <== Enabling STS include subdomain
-            - "traefik.http.middlewares.front-header.headers.stsPreload=true" # <== Enabling STS preload
-            - "traefik.http.middlewares.front-header.headers.forceSTSHeader=true" # <== Enabling force STS header
+            - "traefik.http.middlewares.dashboard-header.headers.stsSeconds=31536000" # <== Setting STS seconds
+            - "traefik.http.middlewares.dashboard-header.headers.stsIncludeSubdomains=true" # <== Enabling STS include subdomain
+            - "traefik.http.middlewares.dashboard-header.headers.stsPreload=true" # <== Enabling STS preload
+            - "traefik.http.middlewares.dashboard-header.headers.forceSTSHeader=true" # <== Enabling force STS header
             ## Security settings
-            - "traefik.http.middlewares.front-header.headers.framedeny=true" # <== Preventing clickjacking
-            - "traefik.http.middlewares.front-header.headers.browserxssfilter=true" # <== Preventing XSS
-            - "traefik.http.middlewares.front-header.headers.referrerPolicy=same-origin" # <== Preventing Referrer leakage
+            - "traefik.http.middlewares.dashboard-header.headers.framedeny=true" # <== Preventing clickjacking
+            - "traefik.http.middlewares.dashboard-header.headers.browserxssfilter=true" # <== Preventing XSS
+            - "traefik.http.middlewares.dashboard-header.headers.referrerPolicy=same-origin" # <== Preventing Referrer leakage
             ## Cache settings
-            - "traefik.http.middlewares.front-header.plugin.httpCache.maxTtl=300" # <== Setting the max TTL time
-            - "traefik.http.middlewares.front-header.plugin.httpCache.maxAge=300" # <== Setting the max age time
-            - "traefik.http.middlewares.front-header.plugin.httpCache.maxStale=300" # <== Setting the max stale time
-            - "traefik.http.middlewares.front-header.plugin.httpCache.minFresh=300" # <== Setting the min fresh time
-            - "traefik.http.middlewares.front-header.plugin.httpCache.sharedMaxAge=300" # <== Setting the shared max age time
-            - "traefik.http.middlewares.front-header.plugin.httpCache.noCache=false" # <== Enabling cache
-            - "traefik.http.middlewares.front-header.plugin.httpCache.noStore=false" # <== Enabling store
-            - "traefik.http.middlewares.front-header.plugin.httpCache.noTransform=false" # <== Enabling transform
-            - "traefik.http.middlewares.front-header.plugin.httpCache.mustRevalidate=true" # <== Enabling revalidation
-            - "traefik.http.middlewares.front-header.plugin.httpCache.proxyRevalidate=true" # <== Enabling proxy revalidation
+            - "traefik.http.middlewares.dashboard-header.plugin.httpCache.maxTtl=300" # <== Setting the max TTL time
+            - "traefik.http.middlewares.dashboard-header.plugin.httpCache.maxAge=300" # <== Setting the max age time
+            - "traefik.http.middlewares.dashboard-header.plugin.httpCache.maxStale=300" # <== Setting the max stale time
+            - "traefik.http.middlewares.dashboard-header.plugin.httpCache.minFresh=300" # <== Setting the min fresh time
+            - "traefik.http.middlewares.dashboard-header.plugin.httpCache.sharedMaxAge=300" # <== Setting the shared max age time
+            - "traefik.http.middlewares.dashboard-header.plugin.httpCache.noCache=false" # <== Enabling cache
+            - "traefik.http.middlewares.dashboard-header.plugin.httpCache.noStore=false" # <== Enabling store
+            - "traefik.http.middlewares.dashboard-header.plugin.httpCache.noTransform=false" # <== Enabling transform
+            - "traefik.http.middlewares.dashboard-header.plugin.httpCache.mustRevalidate=true" # <== Enabling revalidation
+            - "traefik.http.middlewares.dashboard-header.plugin.httpCache.proxyRevalidate=true" # <== Enabling proxy revalidation
             # Traefik loadbalancer settings
-            - "traefik.http.services.front-secure.loadbalancer.server.port=${FRONT_PORT}" # <== The port to use
+            - "traefik.http.services.dashboard-secure.loadbalancer.server.port=${FRONT_PORT}" # <== The port to use
