@@ -30,6 +30,16 @@ export const ChartView = ({data}: {data: AdminData | undefined}) => {
   const [timeTo, setTimeTo] = React.useState('1945-09-02')
   const [table, setTable] = React.useState<DataRow[] | undefined>(undefined)
   const toast = useToast()
+  const registrationData = [
+    {
+      n: 0,
+      day: new Date("18-01-23")
+    },
+    {
+      n: 0,
+      day: new Date("19-01-23")
+    }
+  ]
   const apply = () => {
     if (!data) {
       toast({
@@ -107,6 +117,17 @@ export const ChartView = ({data}: {data: AdminData | undefined}) => {
         <Line type="monotone" dataKey="grades" stroke="#8884d8" />
       </LineChart>
       <Heading fontSize='lg'>Nouveaux inscrits newsletter / jour</Heading>
+      <LineChart
+        width={500}
+        height={300}
+        data={registrationData}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <YAxis label='enregistrements'/>
+        <XAxis label='jours'/>
+        <Tooltip />
+        <Line type="monotone" dataKey="grades" stroke="#8884d8" />
+      </LineChart>
     </Box>
   )
 }
