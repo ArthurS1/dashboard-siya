@@ -1,6 +1,6 @@
 import * as React from "react"
-import { Authentication } from "./Authentication"
-import { ListView } from "./ListView"
+import { Authentication } from "./routes/Authentication"
+import { ListView } from "./routes/ListView"
 import {
   ChakraProvider,
   Heading,
@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react"
 import AdminData from "./AdminData.interface"
 import { SearchFeedback } from "./SearchFeedback"
-import { ChartView } from "./ChartView"
+import { ChartView } from "./routes/ChartView"
 
 const redirect = () => {
   window.location.href = "https://siya-eip.com/"

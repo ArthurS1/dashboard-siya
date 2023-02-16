@@ -11,10 +11,10 @@ import {
   useToast,
 } from "@chakra-ui/react"
 import axios from "axios"
-import Config from "./Config.json"
+import Config from "../Config.json"
 import React from "react"
-import AdminData from "./AdminData.interface"
-import DataRow from "./DataRow.interface"
+import AdminData from "../AdminData.interface"
+import DataRow from "../DataRow.interface"
 
 enum Sorting {
   LowToHigh,

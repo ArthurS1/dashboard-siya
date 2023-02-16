@@ -6,7 +6,7 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react"
-import AdminData from "./AdminData.interface"
+import AdminData from "../AdminData.interface"
 import {
   LineChart,
   YAxis,
@@ -17,8 +17,8 @@ import {
 } from "recharts"
 import React from "react"
 import axios from "axios"
-import Config from "./Config.json"
-import DataRow from "./DataRow.interface"
+import Config from "../Config.json"
+import DataRow from "../DataRow.interface"
 
 interface FeedbacksData {
   date: Date,

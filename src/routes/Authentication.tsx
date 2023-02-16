@@ -6,8 +6,8 @@ import {
 } from "@chakra-ui/react"
 import axios from "axios"
 import React from "react"
-import Config from "./Config.json"
-import AdminData from "./AdminData.interface"
+import Config from "../Config.json"
+import AdminData from "../AdminData.interface"
 
 export const Authentication = ({dataSetter}: {dataSetter: (a: AdminData) => void}) => {
   const toast = useToast()
