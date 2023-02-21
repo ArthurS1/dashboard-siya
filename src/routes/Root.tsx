@@ -4,28 +4,63 @@ import {
   Flex,
   Image,
   Spacer,
+  Box,
 } from "@chakra-ui/react"
+import {
+  Link,
+  Outlet,
+} from "react-router-dom"
+import * as React from "react"
 
-export const Root = () => {
+const Root = () => {
+  const [solid, setSolid] = React.useState(0)
+
   return (
-    <Flex p={2} shadow="lg">
+    <Box bg="gray.50" h="100vh">
+    <Flex bg="white" p={2} shadow="lg">
       <Image mx={2} h={10} src="/logo.svg"/>
-      <ButtonGroup variant="ghost" colorScheme="pink">
-        <Button>Graphiques</Button>
-        <Button>Retours Utilisateurs</Button>
-        <Button>Plaintes</Button>
-        <Button>Recherche</Button>
-        <Button>Newsletter</Button>
+      <ButtonGroup colorScheme="pink">
+        <Link to="/graphs">
+          <Button
+            variant={solid === 0 ? "solid" : "ghost"}
+            onClick={() => setSolid(0)}
+            >Graphiques</Button>
+        </Link>
+        <Link to="/feedbacks">
+          <Button
+            variant={solid === 1 ? "solid" : "ghost"}
+            onClick={() => setSolid(1)}
+            >Retours Utilisateurs</Button>
+        </Link>
+        <Link to="/complaints">
+          <Button
+            variant={solid === 2 ? "solid" : "ghost"}
+            onClick={() => setSolid(2)}
+            >Plaintes</Button>
+        </Link>
+        <Link to="/search">
+          <Button
+            variant={solid === 3 ? "solid" : "ghost"}
+            onClick={() => setSolid(3)}
+            >Recherche</Button>
+        </Link>
+        <Link to="/emails">
+          <Button
+            variant={solid === 4 ? "solid" : "ghost"}
+            onClick={() => setSolid(4)}
+            >Newsletter</Button>
+        </Link>
       </ButtonGroup>
       <Spacer />
       <ButtonGroup colorScheme="pink">
-        <Button hidden variant="outline">
+        <Button variant="outline">
           Logout
-        </Button>
-        <Button>
-          Login
         </Button>
       </ButtonGroup>
     </Flex>
+    <Outlet />
+    </Box>
   )
 }
+
+export default Root

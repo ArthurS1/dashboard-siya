@@ -1,20 +1,31 @@
+import React from "react"
+import axios from "axios"
 import {
   Button,
+  ButtonGroup,
   Box,
-  Text,
+  Flex,
+  IconButton,
+  Select,
   Table,
-  Thead,
   Tbody,
-  Tr,
-  Th,
   Td,
+  Tooltip,
+  Th,
+  Thead,
+  Tr,
   useToast,
 } from "@chakra-ui/react"
-import axios from "axios"
+import {
+  ArrowUpIcon,
+  ArrowDownIcon,
+  CheckIcon,
+} from "@chakra-ui/icons"
+
 import Config from "../Config.json"
-import React from "react"
 import AdminData from "../AdminData.interface"
 import DataRow from "../DataRow.interface"
+import Rating from "../components/Rating"
 
 enum Sorting {
   LowToHigh,
@@ -22,17 +33,38 @@ enum Sorting {
   NoSort,
 }
 
-export const ListView = ({data}: {data: AdminData | undefined}) => {
+const FeedbackPage = ({data}: {data: AdminData | undefined}) => {
   const toast = useToast()
   const [table, setTable] = React.useState<DataRow[] | undefined>(undefined)
   const [gradeMode, setGradeMode] = React.useState(Sorting.NoSort)
   const [dateMode, setDateMode] = React.useState(Sorting.NoSort)
+  const [loadingTable, setLoadingTable] = React.useState(false)
   const tableList = table?.map((e: DataRow) => (
-  <Tr key={e.id}>
+    <Tr key={e.id}>
     <Td>{e.email}</Td>
-    <Td>{e.importance}</Td>
-    <Td>{e.content}</Td>
     <Td>{e.date}</Td>
+    <Td>
+      <Rating value={e.importance} />
+    </Td>
+    <Td>{e.content}</Td>
+    <Td>
+      <Flex>
+      <Select placeholder="non traité">
+        <option>urgent</option>
+        <option>important</option>
+        <option>inutile</option>
+      </Select>
+      <Tooltip label="sauvegarder">
+        <IconButton
+          mx={2}
+          aria-label="sauvegarder"
+          variant="ghost"
+          colorScheme="green"
+          icon=<CheckIcon />
+          />
+      </Tooltip>
+      </Flex>
+    </Td>
   </Tr>
   ))
   const sortGrade = () => {
@@ -65,6 +97,7 @@ export const ListView = ({data}: {data: AdminData | undefined}) => {
     }
   }
   const load = () => {
+    setLoadingTable(true)
     if (!data) {
       toast({
         title: 'Erreur',
@@ -89,33 +122,47 @@ export const ListView = ({data}: {data: AdminData | undefined}) => {
       console.log(err)
       toast({
         title: 'Erreur',
-        description: 'Erreur lors du chargement des données (voir console)',
+        description: err.message,
         status: 'error',
         duration: 9000,
         isClosable: true,
       })
-    })
+    }).then(_ => setLoadingTable(false))
   }
 
   return (
-  <Box>
-    <Text>Trier par:</Text>
-    <Button m='1' onClick={sortGrade}>{gradeMode == Sorting.HighToLow ? "Note (Plus haute)" : "Note (Plus basse)"}</Button>
-    <Button m='1' onClick={sortDate}>{dateMode == Sorting.HighToLow ? "Date (Plus récent)" : "Date (Plus ancienne)"}</Button>
-    <Table variant='simple'>
-      <Thead>
-        <Tr>
-          <Th>utilisateur</Th>
-          <Th>note</Th>
-          <Th>retour</Th>
-          <Th>date</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-       {tableList}
-      </Tbody>
-    </Table>
-    <Button m='1' colorScheme='blue' onClick={load}>Recharger</Button>
-  </Box>
+    <Box m={10} p={5} bg="white" borderRadius={10} shadow="md">
+      <ButtonGroup variant="ghost">
+        <Button m='1'
+          isLoading={loadingTable}
+          colorScheme='blue'
+          onClick={load}
+          >Recharger</Button>
+        <Button m='1'
+          onClick={sortGrade}
+          rightIcon={gradeMode === Sorting.HighToLow ? <ArrowUpIcon /> : <ArrowDownIcon />}
+          >Note</Button>
+        <Button m='1'
+          onClick={sortDate}
+          rightIcon={dateMode === Sorting.HighToLow ? <ArrowUpIcon /> : <ArrowDownIcon />}
+          >Date</Button>
+      </ButtonGroup>
+      <Table variant='simple'>
+        <Thead>
+          <Tr>
+            <Th>utilisateur</Th>
+            <Th>date</Th>
+            <Th>note</Th>
+            <Th>commentaire</Th>
+            <Th>importance</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {tableList}
+        </Tbody>
+      </Table>
+    </Box>
   )
 }
+
+export default FeedbackPage

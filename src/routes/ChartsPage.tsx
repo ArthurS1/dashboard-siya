@@ -25,7 +25,7 @@ interface FeedbacksData {
   grades: number,
 }
 
-export const ChartView = ({data}: {data: AdminData | undefined}) => {
+const ChartsPage = ({data}: {data: AdminData | undefined}) => {
   const [timeFrom, setTimeFrom] = React.useState('1939-09-01')
   const [timeTo, setTimeTo] = React.useState('1945-09-02')
   const [table, setTable] = React.useState<DataRow[] | undefined>(undefined)
@@ -131,3 +131,5 @@ export const ChartView = ({data}: {data: AdminData | undefined}) => {
     </Box>
   )
 }
+
+export default ChartsPage

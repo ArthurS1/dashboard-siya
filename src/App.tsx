@@ -1,62 +1,59 @@
 import * as React from "react"
-import { Authentication } from "./routes/Authentication"
-import { ListView } from "./routes/ListView"
-import {
-  ChakraProvider,
-  Heading,
-  Tabs,
-  Tab,
-  TabList,
-  TabPanels,
-  TabPanel,
-  Text,
-  Box,
-  Flex,
-  Button,
-  theme,
-} from "@chakra-ui/react"
 import AdminData from "./AdminData.interface"
-import { SearchFeedback } from "./SearchFeedback"
-import { ChartView } from "./routes/ChartView"
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom"
+import {
+  Root,
+  ErrorPage,
+  FeedbackPage,
+  AuthPage,
+  ChartsPage,
+  SearchPage,
+  EmailsPage,
+} from "./Routes"
 
-const redirect = () => {
-  window.location.href = "https://siya-eip.com/"
+const App = () => {
+  const [adminData, setAdminData] =
+    React.useState<AdminData | undefined>(undefined)
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Root />,
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          path: "/graphs",
+          element: <ChartsPage data={adminData} />,
+        },
+        {
+          path: "/feedbacks",
+          element: <FeedbackPage data={adminData} />,
+        },
+        {
+          path: "/complaints",
+          element: <ErrorPage />,
+        },
+        {
+          path: "/search",
+          element: <SearchPage data={adminData} />,
+        },
+        {
+          path: "/emails",
+          element: <EmailsPage />,
+        },
+      ]
+    },
+    {
+      path: "/auth",
+      element: <AuthPage dataSetter={setAdminData} />
+    }
+  ])
+  return (
+      <RouterProvider router={router} />
+  )
 }
 
-export const App = () => {
-  const [adminData, setAdminData] = React.useState<AdminData | undefined>(undefined)
-
-  return (<ChakraProvider theme={theme}>
-    <Flex p='4' flexDirection='row' justifyContent='space-between' alignItems='center' w='100%'>
-      <Box>
-        <Heading>Dashboard Administrateur</Heading>
-        <Text fontSize='sm'>Projet Siya EIP 2024</Text>
-      </Box>
-      <Box>
-        <Button mx='1' onClick={redirect}>Retour au site</Button>
-      </Box>
-    </Flex>
-    <Tabs>
-      <TabList>
-        <Tab>Connexion</Tab>
-        <Tab>Liste</Tab>
-        <Tab>Graphique</Tab>
-        <Tab>Recherche</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel>
-          <Authentication dataSetter={setAdminData}></Authentication>
-        </TabPanel>
-        <TabPanel>
-          <ListView data={adminData}></ListView>
-        </TabPanel>
-        <TabPanel>
-          <ChartView data={adminData}></ChartView>
-        </TabPanel>
-        <TabPanel>
-          <SearchFeedback data={adminData}></SearchFeedback>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
-  </ChakraProvider>)
-}
+export default App

@@ -7,7 +7,7 @@ import {
   Link
 } from "react-router-dom"
 
-export const ErrorPage = () => {
+const ErrorPage = () => {
   return (
     <Flex
       flexDirection="column"
@@ -18,9 +18,13 @@ export const ErrorPage = () => {
       <Text fontSize="5xl">
         Page introuvable
       </Text>
-      <Button colorScheme="pink" m={3}>
-        Revenir à la page principale
-      </Button>
+      <Link to="/">
+        <Button colorScheme="pink" m={3}>
+          Revenir à la page principale
+        </Button>
+      </Link>
     </Flex>
   )
 }
+
+export default ErrorPage;

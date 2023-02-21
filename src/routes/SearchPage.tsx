@@ -12,13 +12,13 @@ import {
   Tbody,
   Thead,
 } from "@chakra-ui/react"
-import AdminData from "./AdminData.interface"
+import AdminData from "../AdminData.interface"
 import React from "react"
-import DataRow from "./DataRow.interface"
+import DataRow from "../DataRow.interface"
 import axios from "axios"
-import Config from "./Config.json"
+import Config from "../Config.json"
 
-export const SearchFeedback = ({data} : {data: AdminData | undefined}) => {
+const SearchPage = ({data} : {data: AdminData | undefined}) => {
   const toast = useToast()
   const [table, setTable] = React.useState<DataRow[] | undefined>(undefined)
   const [searchBox, setSearchBox] = React.useState('')
@@ -89,3 +89,5 @@ export const SearchFeedback = ({data} : {data: AdminData | undefined}) => {
     </Box>
   )
 }
+
+export default SearchPage

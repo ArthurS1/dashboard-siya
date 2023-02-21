@@ -1,32 +1,13 @@
-//import { ColorModeScript } from "@chakra-ui/react"
-import {
-  ChakraProvider,
-  theme,
-} from "@chakra-ui/react"
 import * as React from "react"
 import * as ReactDOM from "react-dom/client"
 import reportWebVitals from "./reportWebVitals"
 import * as serviceWorker from "./serviceWorker"
-import {
-  Root
-} from "./routes/Root"
-import {
-  ErrorPage
-} from "./routes/ErrorPage"
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom"
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Root />,
-    errorElement: <ErrorPage />,
-    children: [
-    ]
-  }
-])
+import {
+  ChakraProvider,
+  theme,
+} from "@chakra-ui/react"
+import App from "./App"
 
 const container = document.getElementById("root")
 if (!container) throw new Error('Failed to find the root element');
@@ -35,7 +16,7 @@ const root = ReactDOM.createRoot(container)
 root.render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
-      <RouterProvider router={router} />
+      <App />
     </ChakraProvider>
   </React.StrictMode>,
 )
