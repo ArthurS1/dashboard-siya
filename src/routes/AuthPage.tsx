@@ -16,8 +16,15 @@ import Config from "../Config.json"
 import AdminData from "../AdminData.interface"
 
 const AuthPage = ({dataSetter}: {dataSetter: (a: AdminData) => void}) => {
-  const toast = useToast()
+
   const navigate = useNavigate()
+
+  React.useEffect(() => {
+    if (document.cookie !== "")
+      navigate("/graphs")
+  })
+
+  const toast = useToast()
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [loading, setLoading] = React.useState(false)
@@ -34,11 +41,13 @@ const AuthPage = ({dataSetter}: {dataSetter: (a: AdminData) => void}) => {
       }
     }).then((res) => {
       console.log(res)
-      navigate("/graphs")
       dataSetter({
         email,
         pass: password,
       })
+      document.cookie = `email=${email}`
+      document.cookie = `password=${password}`
+      navigate("/graphs")
       }, (err) => {
       console.log(err)
       toast({

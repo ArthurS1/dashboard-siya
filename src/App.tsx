@@ -3,6 +3,7 @@ import AdminData from "./AdminData.interface"
 import {
   createBrowserRouter,
   RouterProvider,
+  redirect,
 } from "react-router-dom"
 import {
   Root,
@@ -23,6 +24,7 @@ const App = () => {
       path: "/",
       element: <Root />,
       errorElement: <ErrorPage />,
+      //loader: () => redirect("/auth"),
       children: [
         {
           path: "/graphs",

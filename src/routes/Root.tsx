@@ -54,7 +54,7 @@ const Root = () => {
       <Spacer />
       <ButtonGroup colorScheme="pink">
         <Button variant="outline">
-          Logout
+          Déconnexion
         </Button>
       </ButtonGroup>
     </Flex>
