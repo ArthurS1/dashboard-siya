@@ -16,8 +16,9 @@ import {
   Flex,
 } from "@chakra-ui/react"
 
-// TODO: replace with env variable
-import Config from "../Config.json"
+import {
+  apiGet
+} from "@common/ApiCall"
 import {
   CredentialsDispatchContext
 } from "@common/Credentials"
@@ -46,37 +47,24 @@ const AuthPage = () => {
 
   const onLogginAttempt = () => {
     setLoading(true)
-    axios({
-      method: 'get',
-      baseURL: Config.apiUrl,
-      url: '/admin/getCurrAdmPass',
-      params: {
-        email,
-        password,
-      }
-    }).then((res) => {
-      console.log(res)
-      dispatch({
-        type: "modified",
-        data: {
-          email: email,
-          password: password,
-        }
-      })
-      document.cookie = `email=${email};max-age=600`
-      document.cookie = `password=${password};max-age=600`
-      navigate("/graphs")
-      }, (err) => {
-      console.log(err)
-      toast({
-        title: 'Erreur',
-        description: err.message,
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
-      })
-      setLoading(false)
-    })
+    apiGet(
+      "/admin/getCurrAdmPass",
+      {email, password},
+      (_) => {
+        dispatch({
+          type: "modified",
+          data: {
+            email: email,
+            password: password,
+          }
+        })
+        document.cookie = `email=${email};max-age=600`
+        document.cookie = `password=${password};max-age=600`
+        navigate("/graphs")
+      },
+      toast,
+      {data: null}
+    )
   }
 
   return (
