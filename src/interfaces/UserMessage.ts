@@ -1,4 +1,4 @@
-export default interface Feedback {
+export default interface UserMessage {
   id: number,
   content: string,
   email: string,

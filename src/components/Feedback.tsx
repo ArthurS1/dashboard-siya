@@ -10,12 +10,18 @@ import {
 import {
   CheckIcon
 } from "@chakra-ui/icons"
+import {
+  useContext
+} from "react"
 
 import Rating from "@components/Rating"
-import Feedback from "@interfaces/Feedback.interface"
+import UserMessage from "@interfaces/UserMessage"
 import {
-  apiGet,
+  apiGet
 } from "@common/ApiCall"
+import {
+  CredentialsContext
+} from "@common/Credentials"
 
 enum Importance {
   Unused,
@@ -24,7 +30,8 @@ enum Importance {
   Useless,
 }
 
-const UserFeedback = (f: Feedback) => {
+const Feedback = ({message}: {message: UserMessage}) => {
+  const credentials = useContext(CredentialsContext)
   const toast = useToast()
   const updateImportance = (id: number, importance: Importance) => {
     apiGet(
@@ -37,21 +44,18 @@ const UserFeedback = (f: Feedback) => {
       },
       (res) => console.log("test"),
       toast,
-      {
-        email: "", // TODO
-        pass: "", // TODO
-      }
+      credentials
     )
   }
 
   return (
-    <Tr key={f.id}>
-      <Td>{f.email}</Td>
-      <Td>{f.date}</Td>
+    <Tr>
+      <Td>{message.email}</Td>
+      <Td>{message.date}</Td>
       <Td>
-        <Rating value={f.importance !== null ? f.importance : 0 } />
+        <Rating value={message.importance !== null ? message.importance : 0 } />
       </Td>
-      <Td>{f.content}</Td>
+      <Td>{message.content}</Td>
       <Td>
         <Flex>
           <Select placeholder="non traité" value="true">
@@ -65,7 +69,7 @@ const UserFeedback = (f: Feedback) => {
             aria-label="sauvegarder"
             variant="ghost"
             colorScheme="green"
-            onClick={() => console.log('test')}
+            onClick={() => updateImportance(message.id, 1)}
             icon=<CheckIcon />
           />
           </Tooltip>
@@ -74,3 +78,5 @@ const UserFeedback = (f: Feedback) => {
     </Tr>
   )
 }
+
+export default Feedback

@@ -4,13 +4,8 @@ import {
   Button,
   ButtonGroup,
   Box,
-  Flex,
-  IconButton,
-  Select,
   Table,
   Tbody,
-  Td,
-  Tooltip,
   Th,
   Thead,
   Tr,
@@ -19,12 +14,11 @@ import {
 import {
   ArrowUpIcon,
   ArrowDownIcon,
-  CheckIcon,
 } from "@chakra-ui/icons"
 
 import Config from "../Config.json"
-import DataRow from "@interfaces/DataRow.interface"
-import Rating from "@components/Rating"
+import UserMessage from "interfaces/UserMessage"
+import Feedback from "@components/Feedback"
 import {
   CredentialsContext
 } from "@common/Credentials"
@@ -35,65 +29,32 @@ enum Sorting {
   NoSort,
 }
 
-/*enum Importance {
-  Unused,
-  Urgent,
-  Important,
-  Useless,
-}*/
-
 const FeedbackPage = () => {
   const credentials = useContext(CredentialsContext)
   const toast = useToast()
-  const [table, setTable] = React.useState<DataRow[] | undefined>(undefined)
+  const [table, setTable] = React.useState<UserMessage[] | undefined>(undefined)
   const [gradeMode, setGradeMode] = React.useState(Sorting.NoSort)
   const [dateMode, setDateMode] = React.useState(Sorting.NoSort)
   const [loadingTable, setLoadingTable] = React.useState(false)
 
-  const tableList = table?.map((e: DataRow) => (
-    <Tr key={e.id}>
-    <Td>{e.email}</Td>
-    <Td>{e.date}</Td>
-    <Td>
-      <Rating value={e.importance} />
-    </Td>
-    <Td>{e.content}</Td>
-    <Td>
-      <Flex>
-      <Select placeholder="non traité" value="true">
-        <option>urgent</option>
-        <option>important</option>
-        <option>inutile</option>
-      </Select>
-      <Tooltip label="sauvegarder">
-        <IconButton
-          mx={2}
-          aria-label="sauvegarder"
-          variant="ghost"
-          colorScheme="green"
-          onClick={() => console.log('test')}
-          icon=<CheckIcon />
-          />
-      </Tooltip>
-      </Flex>
-    </Td>
-  </Tr>
-  ))
-  const sortGrade = () => {
+  const tableList = table?.map(
+    (e: UserMessage) => <Feedback message={e} key={e.id} />
+  )
+  const sortByRating = () => {
     switch (gradeMode) {
       case Sorting.LowToHigh:
-        table?.sort((a, b) => a.importance - b.importance)
+        table?.sort((a, b) => a.rating - b.rating)
         setGradeMode(Sorting.HighToLow)
         break;
       case Sorting.HighToLow:
-        table?.sort((a, b) => b.importance - a.importance)
+        table?.sort((a, b) => b.rating - a.rating)
         setGradeMode(Sorting.LowToHigh)
         break;
       default:
         setGradeMode(Sorting.HighToLow)
     }
   }
-  const sortDate = () => {
+  const sortByDate = () => {
     switch (dateMode) {
       case Sorting.LowToHigh:
         table?.sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
@@ -151,11 +112,11 @@ const FeedbackPage = () => {
           onClick={load}
           >Recharger</Button>
         <Button m='1'
-          onClick={sortGrade}
+          onClick={sortByRating}
           rightIcon={gradeMode === Sorting.HighToLow ? <ArrowUpIcon /> : <ArrowDownIcon />}
           >Note</Button>
         <Button m='1'
-          onClick={sortDate}
+          onClick={sortByDate}
           rightIcon={dateMode === Sorting.HighToLow ? <ArrowUpIcon /> : <ArrowDownIcon />}
           >Date</Button>
       </ButtonGroup>

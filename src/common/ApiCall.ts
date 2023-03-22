@@ -1,19 +1,23 @@
 import Config from "../Config.json"
 import axios from "axios"
 
+import {
+  Credentials
+} from "@interfaces/Credentials"
+
 const apiGet = (
   route: string,
   data: any,
   action: (response: any) => void,
   toastHandle: any,
-  admin: {email: string, pass:string} | null,
+  credentials: Credentials,
 ) => {
   let params = null;
 
-  if (admin) {
+  if (credentials.data) {
     params = {
-        email: admin?.email,
-        password: data.pass,
+        email: credentials.data.email,
+        password: credentials.data.password,
         ...data,
     }
   } else {

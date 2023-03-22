@@ -3,20 +3,10 @@ import {
   Dispatch,
 } from "react"
 
-interface CredentialsAction {
-  type: string,
-  data: {
-    email: string,
-    password: string,
-  } | null,
-}
-
-interface Credentials {
-  data: {
-    email: string,
-    password: string,
-  } | null
-}
+import {
+  Credentials,
+  CredentialsAction,
+} from "@interfaces/Credentials"
 
 export function credentialsReducer(
   credentials: Credentials,
