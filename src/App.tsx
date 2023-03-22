@@ -1,10 +1,16 @@
-import * as React from "react"
-import AdminData from "./AdminData.interface"
 import {
   createBrowserRouter,
   RouterProvider,
-  redirect,
 } from "react-router-dom"
+import {
+  useReducer
+} from "react"
+
+import {
+  CredentialsContext,
+  CredentialsDispatchContext,
+  credentialsReducer,
+} from "@common/Credentials"
 import {
   Root,
   ErrorPage,
@@ -13,34 +19,32 @@ import {
   ChartsPage,
   SearchPage,
   EmailsPage,
-} from "./Routes"
+  ComplaintsPage,
+} from "@common/Routes"
 
 const App = () => {
-  const [adminData, setAdminData] =
-    React.useState<AdminData | undefined>(undefined)
-
+  const [credentials, dispatch] = useReducer(credentialsReducer, {data: null})
   const router = createBrowserRouter([
     {
       path: "/",
       element: <Root />,
       errorElement: <ErrorPage />,
-      //loader: () => redirect("/auth"),
       children: [
         {
           path: "/graphs",
-          element: <ChartsPage data={adminData} />,
+          element: <ChartsPage />,
         },
         {
           path: "/feedbacks",
-          element: <FeedbackPage data={adminData} />,
+          element: <FeedbackPage />,
         },
         {
           path: "/complaints",
-          element: <ErrorPage />,
+          element: <ComplaintsPage />,
         },
         {
           path: "/search",
-          element: <SearchPage data={adminData} />,
+          element: <SearchPage />,
         },
         {
           path: "/emails",
@@ -50,11 +54,15 @@ const App = () => {
     },
     {
       path: "/auth",
-      element: <AuthPage dataSetter={setAdminData} />
+      element: <AuthPage />
     }
   ])
   return (
-      <RouterProvider router={router} />
+    <CredentialsContext.Provider value={credentials}>
+      <CredentialsDispatchContext.Provider value={dispatch}>
+        <RouterProvider router={router} />
+      </CredentialsDispatchContext.Provider>
+    </CredentialsContext.Provider>
   )
 }
 

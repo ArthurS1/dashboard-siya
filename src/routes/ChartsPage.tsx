@@ -6,7 +6,6 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react"
-import AdminData from "../AdminData.interface"
 import {
   LineChart,
   YAxis,
@@ -17,16 +16,22 @@ import {
 } from "recharts"
 import React from "react"
 import axios from "axios"
+
 import Config from "../Config.json"
-import DataRow from "../DataRow.interface"
+import DataRow from "@interfaces/DataRow.interface"
+import {
+  CredentialsContext,
+} from "@common/Credentials"
 
 interface FeedbacksData {
   date: Date,
   grades: number,
 }
 
-const ChartsPage = ({data}: {data: AdminData | undefined}) => {
-  const [timeFrom, setTimeFrom] = React.useState('1939-09-01')
+const ChartsPage = () => {
+  const credentials = React.useContext(CredentialsContext);
+  const today = () => new Date(Date.now()).toISOString()
+  const [timeFrom, setTimeFrom] = React.useState(today)
   const [timeTo, setTimeTo] = React.useState('1945-09-02')
   const [table, setTable] = React.useState<DataRow[] | undefined>(undefined)
   const toast = useToast()
@@ -41,7 +46,7 @@ const ChartsPage = ({data}: {data: AdminData | undefined}) => {
     }
   ]
   const apply = () => {
-    if (!data) {
+    if (!credentials.data) {
       toast({
         title: 'Erreur',
         description: 'Vérifiez que vous êtes connecté',
@@ -56,8 +61,8 @@ const ChartsPage = ({data}: {data: AdminData | undefined}) => {
       baseURL: Config.apiUrl,
       url: '/feedback/getAll',
       params: {
-        email: data.email,
-        password: data.pass,
+        email: credentials.data.email,
+        password: credentials.data.password,
       }
     }).then((res) => {
       setTable(res.data)
@@ -96,7 +101,7 @@ const ChartsPage = ({data}: {data: AdminData | undefined}) => {
   }, undefined)
 
   return (
-    <Box>
+    <Box m={10} p={5} bg="white" borderRadius={10} shadow="md">
       <Box m={2}>
         <Text> Du : </Text>
         <Input my={2} type='date' value={timeFrom} onChange={event => setTimeFrom(event.currentTarget.value)}/>

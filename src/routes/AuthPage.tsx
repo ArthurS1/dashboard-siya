@@ -1,4 +1,13 @@
 import {
+  useNavigate
+} from "react-router-dom"
+import axios from "axios"
+import {
+  useContext,
+  useState,
+  useEffect,
+} from "react"
+import {
   Button,
   Input,
   Box,
@@ -6,28 +15,34 @@ import {
   Text,
   Flex,
 } from "@chakra-ui/react"
-import {
-  useNavigate
-} from "react-router-dom"
-import axios from "axios"
-import React from "react"
 
+// TODO: replace with env variable
 import Config from "../Config.json"
-import AdminData from "../AdminData.interface"
+import {
+  CredentialsDispatchContext
+} from "@common/Credentials"
 
-const AuthPage = ({dataSetter}: {dataSetter: (a: AdminData) => void}) => {
-
+const AuthPage = () => {
+  const dispatch = useContext(CredentialsDispatchContext)
   const navigate = useNavigate()
-
-  React.useEffect(() => {
-    if (document.cookie !== "")
-      navigate("/graphs")
-  })
-
   const toast = useToast()
-  const [email, setEmail] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [loading, setLoading] = React.useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (document.cookie !== "") {
+      const cookies = document.cookie.split(';')
+      for (let cookie in cookies) {
+        console.log(cookie);
+      }
+      dispatch({
+        type: "logged_out",
+        data: null,
+      })
+      navigate("/graphs")
+    }
+  })
 
   const onLogginAttempt = () => {
     setLoading(true)
@@ -41,12 +56,15 @@ const AuthPage = ({dataSetter}: {dataSetter: (a: AdminData) => void}) => {
       }
     }).then((res) => {
       console.log(res)
-      dataSetter({
-        email,
-        pass: password,
+      dispatch({
+        type: "modified",
+        data: {
+          email: email,
+          password: password,
+        }
       })
-      document.cookie = `email=${email}`
-      document.cookie = `password=${password}`
+      document.cookie = `email=${email};max-age=600`
+      document.cookie = `password=${password};max-age=600`
       navigate("/graphs")
       }, (err) => {
       console.log(err)

@@ -9,11 +9,18 @@ import {
 import {
   Link,
   Outlet,
+  useNavigate,
 } from "react-router-dom"
 import * as React from "react"
 
 const Root = () => {
   const [solid, setSolid] = React.useState(0)
+  const navigate = useNavigate()
+  const logout = () => {
+    document.cookie =  "email=;expires=Thu, 01 Jan 1970 00:00:00 UTC;"
+    document.cookie =  "password=;expires=Thu, 01 Jan 1970 00:00:00 UTC;"
+    navigate('/auth')
+  }
 
   return (
     <Box bg="gray.50" h="100vh">
@@ -53,7 +60,7 @@ const Root = () => {
       </ButtonGroup>
       <Spacer />
       <ButtonGroup colorScheme="pink">
-        <Button variant="outline">
+        <Button variant="outline" onClick={logout}>
           Déconnexion
         </Button>
       </ButtonGroup>

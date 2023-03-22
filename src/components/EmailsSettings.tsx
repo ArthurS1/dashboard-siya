@@ -14,7 +14,7 @@ import {
   DownloadIcon,
 } from "@chakra-ui/icons"
 
-import EmailsSettingsData from "../EmailsSettingsData.interface"
+import EmailsSettingsData from "@interfaces/EmailsSettingsData.interface"
 
 const EmailsSettings = ({state, setState}: {
   state: EmailsSettingsData,

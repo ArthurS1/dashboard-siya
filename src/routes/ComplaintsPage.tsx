@@ -24,9 +24,8 @@ import {
 
 import Config from "../Config.json"
 import DataRow from "@interfaces/DataRow.interface"
-import Rating from "@components/Rating"
 import {
-  CredentialsContext
+  CredentialsContext,
 } from "@common/Credentials"
 
 enum Sorting {
@@ -35,32 +34,20 @@ enum Sorting {
   NoSort,
 }
 
-/*enum Importance {
-  Unused,
-  Urgent,
-  Important,
-  Useless,
-}*/
-
 const FeedbackPage = () => {
   const credentials = useContext(CredentialsContext)
   const toast = useToast()
   const [table, setTable] = React.useState<DataRow[] | undefined>(undefined)
-  const [gradeMode, setGradeMode] = React.useState(Sorting.NoSort)
   const [dateMode, setDateMode] = React.useState(Sorting.NoSort)
   const [loadingTable, setLoadingTable] = React.useState(false)
-
   const tableList = table?.map((e: DataRow) => (
     <Tr key={e.id}>
     <Td>{e.email}</Td>
     <Td>{e.date}</Td>
-    <Td>
-      <Rating value={e.importance} />
-    </Td>
     <Td>{e.content}</Td>
     <Td>
       <Flex>
-      <Select placeholder="non traité" value="true">
+      <Select placeholder="non traité">
         <option>urgent</option>
         <option>important</option>
         <option>inutile</option>
@@ -71,7 +58,6 @@ const FeedbackPage = () => {
           aria-label="sauvegarder"
           variant="ghost"
           colorScheme="green"
-          onClick={() => console.log('test')}
           icon=<CheckIcon />
           />
       </Tooltip>
@@ -79,20 +65,6 @@ const FeedbackPage = () => {
     </Td>
   </Tr>
   ))
-  const sortGrade = () => {
-    switch (gradeMode) {
-      case Sorting.LowToHigh:
-        table?.sort((a, b) => a.importance - b.importance)
-        setGradeMode(Sorting.HighToLow)
-        break;
-      case Sorting.HighToLow:
-        table?.sort((a, b) => b.importance - a.importance)
-        setGradeMode(Sorting.LowToHigh)
-        break;
-      default:
-        setGradeMode(Sorting.HighToLow)
-    }
-  }
   const sortDate = () => {
     switch (dateMode) {
       case Sorting.LowToHigh:
@@ -151,10 +123,6 @@ const FeedbackPage = () => {
           onClick={load}
           >Recharger</Button>
         <Button m='1'
-          onClick={sortGrade}
-          rightIcon={gradeMode === Sorting.HighToLow ? <ArrowUpIcon /> : <ArrowDownIcon />}
-          >Note</Button>
-        <Button m='1'
           onClick={sortDate}
           rightIcon={dateMode === Sorting.HighToLow ? <ArrowUpIcon /> : <ArrowDownIcon />}
           >Date</Button>
@@ -164,7 +132,6 @@ const FeedbackPage = () => {
           <Tr>
             <Th>utilisateur</Th>
             <Th>date</Th>
-            <Th>note</Th>
             <Th>commentaire</Th>
             <Th>importance</Th>
           </Tr>

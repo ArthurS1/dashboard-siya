@@ -12,13 +12,16 @@ import {
   Tbody,
   Thead,
 } from "@chakra-ui/react"
-import AdminData from "../AdminData.interface"
-import React from "react"
-import DataRow from "../DataRow.interface"
+import React, { useContext } from "react"
+import DataRow from "@interfaces/DataRow.interface"
 import axios from "axios"
 import Config from "../Config.json"
+import {
+  CredentialsContext,
+} from "@common/Credentials"
 
-const SearchPage = ({data} : {data: AdminData | undefined}) => {
+const SearchPage = () => {
+  const credentials = useContext(CredentialsContext)
   const toast = useToast()
   const [table, setTable] = React.useState<DataRow[] | undefined>(undefined)
   const [searchBox, setSearchBox] = React.useState('')
@@ -32,7 +35,7 @@ const SearchPage = ({data} : {data: AdminData | undefined}) => {
         </Tr>
         ))
   const search = () => {
-    if (!data) {
+    if (!credentials.data) {
       toast({
         title: 'Erreur',
         description: 'Vérifiez que vous êtes connecté',
@@ -47,8 +50,8 @@ const SearchPage = ({data} : {data: AdminData | undefined}) => {
       baseURL: Config.apiUrl,
       url: '/feedback/getAll',
       params: {
-        email: data.email,
-        password: data.pass,
+        email: credentials.data.email,
+        password: credentials.data.password,
       }
     }).then((res) => {
       setTable(res.data)
