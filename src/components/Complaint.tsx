@@ -14,7 +14,6 @@ import {
   useContext, useState
 } from "react"
 
-import Rating from "@components/Rating"
 import UserMessage from "@interfaces/UserMessage"
 import {
   apiPost,
@@ -23,7 +22,7 @@ import {
   CredentialsContext
 } from "@common/Credentials"
 
-const Feedback = ({message}: {message: UserMessage}) => {
+const Complaint = ({message}: {message: UserMessage}) => {
   const credentials = useContext(CredentialsContext)
   const toast = useToast()
   const [importance, setImportance] = useState(message.importance ?? 0)
@@ -45,9 +44,6 @@ const Feedback = ({message}: {message: UserMessage}) => {
     <Tr>
       <Td>{message.email}</Td>
       <Td>{message.date}</Td>
-      <Td>
-        <Rating value={message.rating !== null ? message.rating : 0 } />
-      </Td>
       <Td maxW={80}>{message.content}</Td>
       <Td>
         <Flex>
@@ -73,4 +69,4 @@ const Feedback = ({message}: {message: UserMessage}) => {
   )
 }
 
-export default Feedback
+export default Complaint

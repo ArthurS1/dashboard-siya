@@ -18,8 +18,35 @@ import {
 } from "react"
 import Cookies from "js-cookie"
 
+interface MenuItem {
+  buttonContent: string,
+  path: string,
+}
+
 const Root = () => {
   const [solid, setSolid] = useState(0)
+  const pages: MenuItem[] = [
+    {
+      buttonContent: "Graphiques",
+      path: "/graphs"
+    },
+    {
+      buttonContent: "Retours utilisateurs",
+      path: "/feedbacks"
+    },
+    {
+      buttonContent: "Plaintes",
+      path: "/complaints"
+    },
+    {
+      buttonContent: "Recherche",
+      path: "/search"
+    },
+    {
+      buttonContent: "Newsletter",
+      path: "/emails"
+    }
+  ]
   const navigate = useNavigate()
   const location = useLocation()
   const logout = () => {
@@ -39,36 +66,16 @@ const Root = () => {
     <Flex bg="white" p={2} shadow="lg">
       <Image mx={2} h={10} src="/logo.svg"/>
       <ButtonGroup colorScheme="pink">
-        <Link to="/graphs">
-          <Button
-            variant={solid === 0 ? "solid" : "ghost"}
-            onClick={() => setSolid(0)}
-            >Graphiques</Button>
-        </Link>
-        <Link to="/feedbacks">
-          <Button
-            variant={solid === 1 ? "solid" : "ghost"}
-            onClick={() => setSolid(1)}
-            >Retours Utilisateurs</Button>
-        </Link>
-        <Link to="/complaints">
-          <Button
-            variant={solid === 2 ? "solid" : "ghost"}
-            onClick={() => setSolid(2)}
-            >Plaintes</Button>
-        </Link>
-        <Link to="/search">
-          <Button
-            variant={solid === 3 ? "solid" : "ghost"}
-            onClick={() => setSolid(3)}
-            >Recherche</Button>
-        </Link>
-        <Link to="/emails">
-          <Button
-            variant={solid === 4 ? "solid" : "ghost"}
-            onClick={() => setSolid(4)}
-            >Newsletter</Button>
-        </Link>
+        {pages.map(e => {
+          return (
+            <Link to={e.path}>
+              <Button
+                variant={location.pathname === e.path ? "solid" : "ghost"}
+                onClick={() => setSolid(0)}
+                >{e.buttonContent}</Button>
+            </Link>
+          )
+        })}
       </ButtonGroup>
       <Spacer />
       <ButtonGroup colorScheme="pink">

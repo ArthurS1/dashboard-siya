@@ -24,7 +24,7 @@ import {
   apiGet
 } from "common/ApiCall"
 
-enum Sorting {
+enum SortingMode {
   LowToHigh,
   HighToLow,
   NoSort,
@@ -34,37 +34,27 @@ const FeedbackPage = () => {
   const credentials = useContext(CredentialsContext)
   const toast = useToast()
   const [table, setTable] = React.useState<UserMessage[] | undefined>(undefined)
-  const [gradeMode, setGradeMode] = React.useState(Sorting.NoSort)
-  const [dateMode, setDateMode] = React.useState(Sorting.NoSort)
+  const [gradeMode, setGradeMode] = React.useState(SortingMode.NoSort)
+  const [dateMode, setDateMode] = React.useState(SortingMode.NoSort)
   const [reloading, setReloading] = React.useState(false)
 
-  const sortByRating = () => {
-    switch (gradeMode) {
-      case Sorting.LowToHigh:
-        table?.sort((a, b) => a.rating - b.rating)
-        setGradeMode(Sorting.HighToLow)
+  const sortTable = (
+    mode: SortingMode,
+    setMode: (a: SortingMode) => void,
+    sortHighToLow: (a: any, b: any) => number,
+    sortLowToHigh: (a: any, b: any) => number
+  ) => {
+    switch (mode) {
+      case SortingMode.LowToHigh:
+        table?.sort(sortHighToLow)
+        setMode(SortingMode.HighToLow)
         break;
-      case Sorting.HighToLow:
-        table?.sort((a, b) => b.rating - a.rating)
-        setGradeMode(Sorting.LowToHigh)
-        break;
-      default:
-        setGradeMode(Sorting.HighToLow)
-    }
-  }
-  const sortByDate = () => {
-    switch (dateMode) {
-      case Sorting.LowToHigh:
-        table?.sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
-        setDateMode(Sorting.HighToLow)
-        break;
-      case Sorting.HighToLow:
-        table?.sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
-        setDateMode(Sorting.HighToLow)
-        setDateMode(Sorting.LowToHigh)
+      case SortingMode.HighToLow:
+        table?.sort(sortLowToHigh)
+        setMode(SortingMode.LowToHigh)
         break;
       default:
-        setDateMode(Sorting.HighToLow)
+        setMode(SortingMode.HighToLow)
     }
   }
   const reload = () => {
@@ -73,7 +63,7 @@ const FeedbackPage = () => {
       "/feedback/getAll",
       {},
       (res) => {
-        setTable(res.data)
+        setTable(res.data.filter((e: UserMessage) => e.isPlainte === 0))
         setReloading(false)
       },
       toast,
@@ -90,12 +80,24 @@ const FeedbackPage = () => {
           onClick={reload}
           >Recharger</Button>
         <Button m='1'
-          onClick={sortByRating}
-          rightIcon={gradeMode === Sorting.HighToLow ? <ArrowUpIcon /> : <ArrowDownIcon />}
+          onClick={() => sortTable(
+            gradeMode,
+            setGradeMode,
+            (a, b) => b.rating - a.rating,
+            (a, b) => a.rating - b.rating
+          )}
+          rightIcon={gradeMode === SortingMode.HighToLow ?
+            <ArrowUpIcon /> : <ArrowDownIcon />}
           >Note</Button>
         <Button m='1'
-          onClick={sortByDate}
-          rightIcon={dateMode === Sorting.HighToLow ? <ArrowUpIcon /> : <ArrowDownIcon />}
+          onClick={() => sortTable(
+            dateMode,
+            setDateMode,
+            (a, b) => Date.parse(b.date) - Date.parse(a.date),
+            (a, b) => Date.parse(a.date) - Date.parse(b.date)
+          )}
+          rightIcon={dateMode === SortingMode.HighToLow ?
+            <ArrowUpIcon /> : <ArrowDownIcon />}
           >Date</Button>
       </ButtonGroup>
       <Table variant='simple'>

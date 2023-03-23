@@ -5,4 +5,5 @@ export default interface UserMessage {
   date: string,
   importance: number | null,
   rating: number,
+  isPlainte: number,
 }
