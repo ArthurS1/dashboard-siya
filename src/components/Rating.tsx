@@ -7,7 +7,9 @@ const Rating = ({value}: {value: number}) => {
 
   return (
     <>
-      { [...Array(stars)].map(_ => (<StarIcon m="1px" boxSize={3} />)) }
+      { [...Array(stars)].map((_, i) => (
+        <StarIcon key={i} m="1px" boxSize={3} />)
+      ) }
     </>
   )
 }
