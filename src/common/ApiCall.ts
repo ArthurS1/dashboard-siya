@@ -7,7 +7,7 @@ import {
 
 const apiGet = (
   route: string,
-  data: any,
+  payload: any,
   action: (response: any) => void,
   toastHandle: any,
   credentials: Credentials,
@@ -18,10 +18,10 @@ const apiGet = (
     params = {
         email: credentials.data.email,
         password: credentials.data.password,
-        ...data,
+        ...payload,
     }
   } else {
-    params = data
+    params = payload
   }
   axios({
       method: 'get',
@@ -42,4 +42,38 @@ const apiGet = (
     })
 }
 
-export {apiGet}
+const apiPost = (
+  route: string,
+  payload: any,
+  toastHandle: any,
+  credentials: Credentials,
+) => {
+  let data = null;
+
+  if (credentials.data) {
+    data = {
+        email: credentials.data.email,
+        password: credentials.data.password,
+        ...payload,
+    }
+  } else {
+    data = payload
+  }
+  axios({
+      method: 'post',
+      baseURL: Config.apiUrl,
+      url: route,
+      data,
+    }).catch((err) => {
+      console.log(err)
+      toastHandle({
+        title: 'Erreur',
+        description: err.message,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      })
+    })
+}
+
+export {apiGet, apiPost}

@@ -3,8 +3,10 @@ import {
   RouterProvider,
 } from "react-router-dom"
 import {
+  useEffect,
   useReducer
 } from "react"
+import Cookies from "js-cookie"
 
 import {
   CredentialsContext,
@@ -57,6 +59,22 @@ const App = () => {
       element: <AuthPage />
     }
   ])
+
+  useEffect(() => {
+    const email = Cookies.get("email")
+    const password = Cookies.get("password")
+
+    if (email && password) {
+      dispatch({
+          type: "modified",
+          data: {
+            email,
+            password,
+          }
+        })
+    }
+  }, [])
+
   return (
     <CredentialsContext.Provider value={credentials}>
       <CredentialsDispatchContext.Provider value={dispatch}>

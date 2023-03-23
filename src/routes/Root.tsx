@@ -10,17 +10,29 @@ import {
   Link,
   Outlet,
   useNavigate,
+  useLocation,
 } from "react-router-dom"
-import * as React from "react"
+import {
+  useEffect,
+  useState,
+} from "react"
+import Cookies from "js-cookie"
 
 const Root = () => {
-  const [solid, setSolid] = React.useState(0)
+  const [solid, setSolid] = useState(0)
   const navigate = useNavigate()
+  const location = useLocation()
   const logout = () => {
-    document.cookie =  "email=;expires=Thu, 01 Jan 1970 00:00:00 UTC;"
-    document.cookie =  "password=;expires=Thu, 01 Jan 1970 00:00:00 UTC;"
-    navigate('/auth')
+    Cookies.remove("email")
+    Cookies.remove("password")
+    navigate("/auth")
   }
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      navigate("/graphs")
+    }
+  }, [navigate, location])
 
   return (
     <Box bg="gray.50" h="100vh">

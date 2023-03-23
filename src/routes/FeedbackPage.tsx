@@ -1,5 +1,4 @@
 import React, { useContext } from "react"
-import axios from "axios"
 import {
   Button,
   ButtonGroup,
@@ -16,12 +15,14 @@ import {
   ArrowDownIcon,
 } from "@chakra-ui/icons"
 
-import Config from "../Config.json"
 import UserMessage from "interfaces/UserMessage"
 import Feedback from "@components/Feedback"
 import {
   CredentialsContext
 } from "@common/Credentials"
+import {
+  apiGet
+} from "common/ApiCall"
 
 enum Sorting {
   LowToHigh,
@@ -35,11 +36,8 @@ const FeedbackPage = () => {
   const [table, setTable] = React.useState<UserMessage[] | undefined>(undefined)
   const [gradeMode, setGradeMode] = React.useState(Sorting.NoSort)
   const [dateMode, setDateMode] = React.useState(Sorting.NoSort)
-  const [loadingTable, setLoadingTable] = React.useState(false)
+  const [reloading, setReloading] = React.useState(false)
 
-  const tableList = table?.map(
-    (e: UserMessage) => <Feedback message={e} key={e.id} />
-  )
   const sortByRating = () => {
     switch (gradeMode) {
       case Sorting.LowToHigh:
@@ -69,47 +67,27 @@ const FeedbackPage = () => {
         setDateMode(Sorting.HighToLow)
     }
   }
-  const load = () => {
-    setLoadingTable(true)
-    if (!credentials.data) {
-      toast({
-        title: 'Erreur',
-        description: 'Vérifiez que vous êtes connecté',
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
-      })
-      return;
-    }
-    axios({
-      method: 'get',
-      baseURL: Config.apiUrl,
-      url: '/feedback/getAll',
-      params: {
-        email: credentials.data.email,
-        password: credentials.data.password,
-      }
-    }).then((res) => {
-      setTable(res.data)
-    }, (err) => {
-      console.log(err)
-      toast({
-        title: 'Erreur',
-        description: err.message,
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
-      })
-    }).then(_ => setLoadingTable(false))
+  const reload = () => {
+    setReloading(true)
+    apiGet(
+      "/feedback/getAll",
+      {},
+      (res) => {
+        setTable(res.data)
+        setReloading(false)
+      },
+      toast,
+      credentials
+    )
   }
 
   return (
     <Box m={10} p={5} bg="white" borderRadius={10} shadow="md">
       <ButtonGroup variant="ghost">
         <Button m='1'
-          isLoading={loadingTable}
+          isLoading={reloading}
           colorScheme='blue'
-          onClick={load}
+          onClick={reload}
           >Recharger</Button>
         <Button m='1'
           onClick={sortByRating}
@@ -131,7 +109,7 @@ const FeedbackPage = () => {
           </Tr>
         </Thead>
         <Tbody>
-          {tableList}
+          {table?.map((e: UserMessage) => <Feedback message={e} key={e.id} />)}
         </Tbody>
       </Table>
     </Box>

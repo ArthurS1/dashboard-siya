@@ -1,7 +1,6 @@
 import {
   useNavigate
 } from "react-router-dom"
-import axios from "axios"
 import {
   useContext,
   useState,
@@ -15,6 +14,7 @@ import {
   Text,
   Flex,
 } from "@chakra-ui/react"
+import Cookies from "js-cookie"
 
 import {
   apiGet
@@ -32,18 +32,13 @@ const AuthPage = () => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (document.cookie !== "") {
-      const cookies = document.cookie.split(';')
-      for (let cookie in cookies) {
-        console.log(cookie);
-      }
-      dispatch({
-        type: "logged_out",
-        data: null,
-      })
+    const email = Cookies.get("email")
+    const password = Cookies.get("password")
+
+    if (email && password) {
       navigate("/graphs")
     }
-  })
+  }, [navigate])
 
   const onLogginAttempt = () => {
     setLoading(true)
@@ -54,12 +49,12 @@ const AuthPage = () => {
         dispatch({
           type: "modified",
           data: {
-            email: email,
-            password: password,
+            email,
+            password,
           }
         })
-        document.cookie = `email=${email};max-age=600`
-        document.cookie = `password=${password};max-age=600`
+        Cookies.set("email", email, {expires: 1})
+        Cookies.set("password", password, {expires: 1})
         navigate("/graphs")
       },
       toast,
