@@ -13,6 +13,12 @@ import {
 import {
   DownloadIcon,
 } from "@chakra-ui/icons"
+import {
+  useFilePicker
+} from "use-file-picker"
+import {
+  useState
+} from "react"
 
 import EmailsSettingsData from "@interfaces/EmailsSettingsData.interface"
 
@@ -20,6 +26,18 @@ const EmailsSettings = ({state, setState}: {
   state: EmailsSettingsData,
   setState: any,
   }) => {
+
+  const [parsedEmails, setParsedEmails] : [string[], any] = useState([])
+  const [openFileSelector] = useFilePicker({
+    accept: ".csv",
+    multiple: false,
+    onFilesSuccessfulySelected:
+      (files) => getEmailsFromCsvFile(files.filesContent[0].content)
+  })
+
+  const getEmailsFromCsvFile = (s: string) => {
+    setParsedEmails(s.split(','))
+  }
 
   return (
     <Modal
@@ -37,15 +55,22 @@ const EmailsSettings = ({state, setState}: {
             <Switch
               colorScheme="pink"
               size="lg"
-              onChange={(a) => setState({...state, sendToAllUsers: a})}
-              isChecked={state.sendToAllUsers}
+              onChange={(_) => setState({...state, sendToAllUsers: !state.sendToAllUsers})}
+              defaultChecked={true}
               />
           </Flex>
           <Button
             rightIcon=<DownloadIcon />
+            onClick={() => openFileSelector()}
             my={5}
-            disabled={!state.sendToAllUsers}
+            disabled={state.sendToAllUsers}
             >Télécharger un fichier</Button>
+          <Box hidden={state.sendToAllUsers && parsedEmails.length !== 0}>
+            <Text><b>Will be sent to:</b></Text>
+            <Box mb={5} borderColor={"gray.200"} borderRadius="md" borderWidth="0.2rem" p={2}>
+              {parsedEmails.map((e) => <Text>{e}</Text>)}
+            </Box>
+          </Box>
           <Text fontSize="xs">Envoyez un fichier CSV contenant une colonne étant la liste des emails à envoyer</Text>
         </Box>
       </ModalContent>

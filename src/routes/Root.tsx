@@ -14,7 +14,6 @@ import {
 } from "react-router-dom"
 import {
   useEffect,
-  useState,
 } from "react"
 import Cookies from "js-cookie"
 
@@ -24,7 +23,6 @@ interface MenuItem {
 }
 
 const Root = () => {
-  const [solid, setSolid] = useState(0)
   const pages: MenuItem[] = [
     {
       buttonContent: "Graphiques",
@@ -56,9 +54,15 @@ const Root = () => {
   }
 
   useEffect(() => {
-    if (location.pathname === "/") {
+    const email = Cookies.get("email")
+    const password = Cookies.get("password")
+
+    if (!email && !password) {
+      navigate("/auth")
+    } else if (location.pathname === "/") {
       navigate("/graphs")
     }
+
   }, [navigate, location])
 
   return (
@@ -68,10 +72,10 @@ const Root = () => {
       <ButtonGroup colorScheme="pink">
         {pages.map(e => {
           return (
-            <Link to={e.path}>
+            <Link key={e.path} to={e.path}>
               <Button
                 variant={location.pathname === e.path ? "solid" : "ghost"}
-                onClick={() => setSolid(0)}
+                onClick={() => navigate(e.path)}
                 >{e.buttonContent}</Button>
             </Link>
           )
