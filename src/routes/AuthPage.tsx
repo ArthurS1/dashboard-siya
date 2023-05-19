@@ -57,6 +57,9 @@ const AuthPage = () => {
         Cookies.set("password", password, {expires: 1})
         navigate("/graphs")
       },
+      (_) => {
+        setLoading(false);
+      },
       toast,
       {data: null}
     )

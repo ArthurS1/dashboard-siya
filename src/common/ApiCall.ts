@@ -9,6 +9,7 @@ const apiGet = (
   route: string,
   payload: any,
   action: (response: any) => void,
+  actionFailed: (error: any) => void,
   toastHandle: any,
   credentials: Credentials,
 ) => {
@@ -32,6 +33,7 @@ const apiGet = (
       action(res)
     }, (err) => {
       console.log(err)
+      actionFailed(err)
       toastHandle({
         title: 'Erreur',
         description: err.message,

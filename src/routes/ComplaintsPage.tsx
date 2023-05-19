@@ -65,6 +65,7 @@ const ComplaintsPage = () => {
         setTable(res.data.filter((e: UserMessage) => e.isPlainte === 1))
         setReloading(false)
       },
+      (_) => {setReloading(false)},
       toast,
       credentials
     )

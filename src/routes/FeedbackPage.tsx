@@ -66,6 +66,7 @@ const FeedbackPage = () => {
         setTable(res.data.filter((e: UserMessage) => e.isPlainte === 0))
         setReloading(false)
       },
+      (_) => {setReloading(false)},
       toast,
       credentials
     )
