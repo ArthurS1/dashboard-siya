@@ -8,7 +8,9 @@ import {
   useToast,
 } from "@chakra-ui/react"
 import {
-  CheckIcon
+  CheckIcon,
+  EmailIcon,
+  DownloadIcon,
 } from "@chakra-ui/icons"
 import {
   useContext, useState
@@ -16,13 +18,15 @@ import {
 
 import UserMessage from "@interfaces/UserMessage"
 import {
+  apiGet,
   apiPost,
 } from "@common/ApiCall"
 import {
   CredentialsContext
 } from "@common/Credentials"
+import apiUrl from 'Config.json'
 
-const Complaint = ({message}: {message: UserMessage}) => {
+const Complaint = ({ message }: { message: UserMessage }) => {
   const credentials = useContext(CredentialsContext)
   const toast = useToast()
   const [importance, setImportance] = useState(message.importance ?? 0)
@@ -39,12 +43,45 @@ const Complaint = ({message}: {message: UserMessage}) => {
       credentials
     )
   }
+  const mailTo = (email: string) => {
+    window.location.href = `mailto:${email}`
+  }
+  const getAttachment = (id: number) => {
+    window.open(
+      `${apiUrl.apiUrl}/feedback/getImgById?email=${credentials.data?.email}&password=${credentials.data?.password}&id=${id}`,
+    '_blank');
+  }
 
   return (
     <Tr>
-      <Td>{message.email}</Td>
+      <Td>
+        {message.email}
+        <Tooltip label="contacter">
+          <IconButton
+            mx={2}
+            aria-label="contacter"
+            variant="ghost"
+            colorScheme="blue"
+            onClick={() => mailTo(message.email)}
+            icon=<EmailIcon />
+          />
+        </Tooltip>
+      </Td>
       <Td>{message.date}</Td>
       <Td maxW={80}>{message.content}</Td>
+      <Td maxW={80}>
+        <Tooltip label="document">
+          <IconButton
+            mx={2}
+            aria-label="document"
+            variant="ghost"
+            colorScheme="blue"
+            isDisabled={message.file === ''}
+            onClick={() => getAttachment(message.id)}
+            icon=<DownloadIcon />
+          />
+        </Tooltip>
+      </Td>
       <Td>
         <Flex>
           <Select placeholder="sélectionez" value={importance}
@@ -54,14 +91,14 @@ const Complaint = ({message}: {message: UserMessage}) => {
             <option value="3">urgent</option>
           </Select>
           <Tooltip label="sauvegarder">
-          <IconButton
-            mx={2}
-            aria-label="sauvegarder"
-            variant="ghost"
-            colorScheme="green"
-            onClick={() => updateImportance(message.id, importance)}
-            icon=<CheckIcon />
-          />
+            <IconButton
+              mx={2}
+              aria-label="sauvegarder"
+              variant="ghost"
+              colorScheme="green"
+              onClick={() => updateImportance(message.id, importance)}
+              icon=<CheckIcon />
+            />
           </Tooltip>
         </Flex>
       </Td>

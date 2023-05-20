@@ -62,7 +62,7 @@ const ComplaintsPage = () => {
       "/feedback/getAll",
       {},
       (res) => {
-        setTable(res.data.filter((e: UserMessage) => e.isPlainte === 1))
+        setTable(res.data.filter((e: UserMessage) => e.isComplaint === 1))
         setReloading(false)
       },
       (_) => {setReloading(false)},
@@ -96,6 +96,7 @@ const ComplaintsPage = () => {
             <Th>utilisateur</Th>
             <Th>date</Th>
             <Th>commentaire</Th>
+            <Th>pièce jointe</Th>
             <Th>importance</Th>
           </Tr>
         </Thead>

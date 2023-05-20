@@ -63,7 +63,7 @@ const FeedbackPage = () => {
       "/feedback/getAll",
       {},
       (res) => {
-        setTable(res.data.filter((e: UserMessage) => e.isPlainte === 0))
+        setTable(res.data.filter((e: UserMessage) => e.isComplaint === 0))
         setReloading(false)
       },
       (_) => {setReloading(false)},

@@ -68,7 +68,7 @@ const SearchPage = () => {
   }
 
   return (
-    <Box>
+    <Box m={10} p={5} bg="white" borderRadius={10} shadow="md">
       <InputGroup>
         <Input value={searchBox} onChange={event => setSearchBox(event.currentTarget.value)} placeholder="rechercher parmis les retour" />
         <InputRightAddon>
