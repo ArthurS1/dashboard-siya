@@ -19,65 +19,86 @@ import {
 } from "recharts"
 import React from "react"
 
-import DataRow from "@interfaces/DataRow.interface"
+import FeedbackData from "@interfaces/FeedbackData"
+import NewsletterData from "@interfaces/NewsletterData"
 import {
   CredentialsContext,
 } from "@common/Credentials"
 import { apiGet } from "@common/ApiCall"
 
-interface FeedbacksData {
+interface DataPerDay {
   date: Date,
-  grades: number,
+  data: number,
 }
 
 const ChartsPage = () => {
+  const formatDate = (date: Date) => [
+    date.getFullYear(),
+    String(date.getMonth()).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0')
+  ].join("-")
+  const getTodayDate = () => new Date(Date.now())
+  const getLastMonthDate = () => {
+    let tmp = new Date(Date.now())
+    tmp.setMonth(tmp.getMonth() - 1)
+    return tmp
+  }
+
   const credentials = React.useContext(CredentialsContext);
-  const formatDate = (date: Date) =>
-    [date.getMonth(), date.getDate(), date.getFullYear()].join("/")
-  const now = new Date(Date.now())
-  const [timeFrom, setTimeFrom] = React.useState(formatDate(now))
-  const [timeTo, setTimeTo] = React.useState(formatDate(now))
-  const [table, setTable] = React.useState<DataRow[] | undefined>(undefined)
   const toast = useToast()
+  const [timeFrom, setTimeFrom] = React.useState(formatDate(getLastMonthDate()))
+  const [timeTo, setTimeTo] = React.useState(formatDate(getTodayDate()))
+  const [feedbacks, setFeedbacks] = React.useState<FeedbackData[] | undefined>(undefined)
+  const [newletterAccounts, setNewsletterAccounts] = React.useState<NewsletterData[] | undefined>(undefined)
   const apply = () => {
     apiGet(
       "/feedback/getAll",
       {},
-      (res) => setTable(res.data),
-      (_) => {},
+      (res) => setFeedbacks(res.data),
+      (_) => { },
+      toast,
+      credentials
+    )
+    apiGet(
+      "/newsletter/getAllUser",
+      {},
+      (res) => setNewsletterAccounts(res.data),
+      (_) => { },
       toast,
       credentials
     )
   }
-  const sameDay = (d1: Date, d2: Date) : boolean => {
+  const sameDay = (d1: Date, d2: Date): boolean => {
     return (
       d1.getDate() === d2.getDate() &&
       d1.getFullYear() === d2.getFullYear() &&
       d1.getMonth === d2.getMonth
     )
   }
-  const registrationData = [
-    {
-      n: 0,
-      day: new Date("18-01-23")
-    },
-    {
-      n: 0,
-      day: new Date("19-01-23")
-    }
-  ]
+  const newsletterAccountsData: DataPerDay[] | undefined =
+    newletterAccounts?.reduce((acc: DataPerDay[] | undefined, val: NewsletterData): DataPerDay[] | undefined => {
+      let currentValDate = new Date(val.date)
 
-  // TODO: remove the useless typing
-  const feedbacksData : FeedbacksData[] | undefined = table?.reduce((acc: FeedbacksData[] | undefined, val: DataRow): FeedbacksData[] | undefined => {
+      if (acc === undefined)
+        return [{ date: currentValDate, data: 1 }]
+      if (sameDay(currentValDate, acc[acc.length - 1].date)) {
+        acc[acc.length - 1].data += 1
+      } else {
+        acc.push({ date: currentValDate, data: 1 })
+      }
+      return acc
+    }, undefined);
+
+  const feedbacksData: DataPerDay[] | undefined = feedbacks?.reduce((acc: DataPerDay[] | undefined, val: FeedbackData): DataPerDay[] | undefined => {
     let currentValDate = new Date(val.date)
 
     if (acc === undefined)
-      return [{ date: currentValDate , grades: val.importance }]
+      return [{ date: currentValDate, data: val.importance }]
     if (sameDay(currentValDate, acc[acc.length - 1].date)) {
-      acc[acc.length - 1].grades += val.importance
-      acc[acc.length - 1].grades /= 2
+      acc[acc.length - 1].data += val.importance
+      acc[acc.length - 1].data /= 2
     } else {
-      acc.push({ date: currentValDate , grades: val.importance })
+      acc.push({ date: currentValDate, data: val.importance })
     }
     return acc
   }, undefined)
@@ -90,14 +111,14 @@ const ChartsPage = () => {
           minW="20rem"
           type="date"
           value={timeFrom}
-          onChange={event => setTimeFrom(event.currentTarget.value)}/>
-        <Text  mx={2}>au</Text>
+          onChange={event => setTimeFrom(event.currentTarget.value)} />
+        <Text mx={2}>au</Text>
         <Input
           w="fit-content"
           minW="20rem"
           type="date"
           value={timeTo}
-          onChange={event => setTimeTo(event.currentTarget.value)}/>
+          onChange={event => setTimeTo(event.currentTarget.value)} />
         <Button
           mx={2}
           colorScheme="blue"
@@ -106,34 +127,34 @@ const ChartsPage = () => {
       </Flex>
       <Grid my={10} justifyItems="center" templateColumns="repeat(2, 1fr)">
         <GridItem>
-        <Heading fontSize='lg'>Moyenne des retours / jour</Heading>
-        <LineChart
-        width={500}
-        height={30}
-        data={feedbacksData}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <YAxis label='retours'/>
-          <XAxis label='jours'/>
-          <Tooltip />
-          <Line type="monotone" dataKey="grades" stroke="#8884d8" />
-        </LineChart>
-        </GridItem>
-        <GridItem>
-          <Heading fontSize='lg'>Nouveaux inscrits newsletter / jour</Heading>
+          <Heading fontSize='lg'>Moyenne des retours / jour</Heading>
           <LineChart
-          width={500}
-          height={300}
-          data={registrationData}
+            width={500}
+            height={30}
+            data={feedbacksData}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <YAxis label='enregistrements'/>
-            <XAxis label='jours'/>
+            <YAxis label='retours' />
+            <XAxis label='jours' />
             <Tooltip />
             <Line type="monotone" dataKey="grades" stroke="#8884d8" />
           </LineChart>
         </GridItem>
-       </Grid>
+        <GridItem>
+          <Heading fontSize='lg'>Nouveaux inscrits newsletter / jour</Heading>
+          <LineChart
+            width={500}
+            height={300}
+            data={newsletterAccountsData}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <YAxis label='enregistrements' />
+            <XAxis label='jours' />
+            <Tooltip />
+            <Line type="monotone" dataKey="grades" stroke="#8884d8" />
+          </LineChart>
+        </GridItem>
+      </Grid>
     </Box>
   )
 }

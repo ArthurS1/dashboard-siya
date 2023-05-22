@@ -13,7 +13,7 @@ import {
   Thead,
 } from "@chakra-ui/react"
 import React, { useContext } from "react"
-import DataRow from "@interfaces/DataRow.interface"
+import FeedbackData from "@interfaces/FeedbackData"
 import axios from "axios"
 import Config from "../Config.json"
 import {
@@ -23,10 +23,10 @@ import {
 const SearchPage = () => {
   const credentials = useContext(CredentialsContext)
   const toast = useToast()
-  const [table, setTable] = React.useState<DataRow[] | undefined>(undefined)
+  const [table, setTable] = React.useState<FeedbackData[] | undefined>(undefined)
   const [searchBox, setSearchBox] = React.useState('')
   const searchResult = table?.filter((e) => e.content.includes(searchBox))
-  const tableList = searchResult?.map((e: DataRow) => (
+  const tableList = searchResult?.map((e: FeedbackData) => (
         <Tr key={e.id}>
         <Td>{e.email}</Td>
         <Td>{e.importance}</Td>

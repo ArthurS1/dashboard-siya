@@ -18,7 +18,6 @@ import {
 
 import UserMessage from "@interfaces/UserMessage"
 import {
-  apiGet,
   apiPost,
 } from "@common/ApiCall"
 import {

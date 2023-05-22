@@ -1,4 +1,4 @@
-export default interface DataRow {
+export default interface FeedbackData {
   id: number,
   content: string,
   email: string,
