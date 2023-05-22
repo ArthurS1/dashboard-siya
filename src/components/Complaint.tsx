@@ -23,7 +23,7 @@ import {
 import {
   CredentialsContext
 } from "@common/Credentials"
-import apiUrl from 'Config.json'
+import Config from '../Config.json'
 
 const Complaint = ({ message }: { message: UserMessage }) => {
   const credentials = useContext(CredentialsContext)
@@ -47,7 +47,7 @@ const Complaint = ({ message }: { message: UserMessage }) => {
   }
   const getAttachment = (id: number) => {
     window.open(
-      `${apiUrl.apiUrl}/feedback/getImgById?email=${credentials.data?.email}&password=${credentials.data?.password}&id=${id}`,
+      `${Config.apiUrl}feedback/getImgById?email=${credentials.data?.email}&password=${credentials.data?.password}&id=${id}`,
     '_blank');
   }
 
