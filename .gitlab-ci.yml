@@ -35,7 +35,7 @@ build-dashboard-admin:
 deploy-dev:
   stage: deploy-dashboard-admin
   image:
-    name: docker/compose:debian-1.29.2
+    name: debian:stable-slim
   before_script:
     # Install dependencies to connect over ssh in the targeted server
     - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
