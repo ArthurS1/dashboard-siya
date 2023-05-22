@@ -1,12 +1,11 @@
-services:
-  - docker:dind
-
 variables:
     IMAGE_NAME_DASHBOARD_ADMIN: dashboard-image
     IMAGE_TAG: latest
     NEW_IMAGE_NAME: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/$CI_COMMIT_REF_SLUG
     COMMIT_TAG: $CI_COMMIT_SHA
     DOCKER_DRIVER: overlay
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
 
 stages:
     - build-dashboard-admin
@@ -14,8 +13,12 @@ stages:
 
 build-dashboard-admin:
     stage: build-dashboard-admin
-    image:
-        name: docker/compose:debian-1.29.2
+    image: docker:20.10.17
+    services:
+        - docker:20.10.17-dind
+    variables:
+        IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
+        DOCKER_TLS_CERTDIR: ""
     before_script:
         - docker-compose --version
     script:
