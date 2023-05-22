@@ -17,7 +17,7 @@ import {
   Tooltip,
   Line,
 } from "recharts"
-import React from "react"
+import React, { useEffect } from "react"
 
 import FeedbackData from "@interfaces/FeedbackData"
 import NewsletterData from "@interfaces/NewsletterData"
@@ -43,7 +43,6 @@ const ChartsPage = () => {
     tmp.setMonth(tmp.getMonth() - 1)
     return tmp
   }
-
   const credentials = React.useContext(CredentialsContext);
   const toast = useToast()
   const [timeFrom, setTimeFrom] = React.useState(formatDate(getLastMonthDate()))
@@ -130,14 +129,14 @@ const ChartsPage = () => {
           <Heading fontSize='lg'>Moyenne des retours / jour</Heading>
           <LineChart
             width={500}
-            height={30}
+            height={300}
             data={feedbacksData}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} height={10} />
             <YAxis label='retours' />
             <XAxis label='jours' />
             <Tooltip />
-            <Line type="monotone" dataKey="grades" stroke="#8884d8" />
+            <Line type="monotone" dataKey="data" stroke="#8884d8" />
           </LineChart>
         </GridItem>
         <GridItem>
@@ -147,11 +146,11 @@ const ChartsPage = () => {
             height={300}
             data={newsletterAccountsData}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} height={10} />
             <YAxis label='enregistrements' />
             <XAxis label='jours' />
             <Tooltip />
-            <Line type="monotone" dataKey="grades" stroke="#8884d8" />
+            <Line type="monotone" dataKey="data" stroke="#8884d8" />
           </LineChart>
         </GridItem>
       </Grid>
