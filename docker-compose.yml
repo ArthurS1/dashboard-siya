@@ -14,6 +14,11 @@ services:
             dockerfile: Dockerfile
         networks:
             - ${TRAEFIK_NETWORK_NAME}
+        logging:
+            driver: gelf
+            options:
+                gelf-address: "udp://localhost:50000"
+                tag: ${DASHBOARD_CONTAINER_NAME}
         # ports:
         #     - 3000:3000
         labels:
