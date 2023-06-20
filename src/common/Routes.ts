@@ -6,6 +6,7 @@ import AuthPage from "@routes/AuthPage"
 import ChartsPage from "@routes/ChartsPage"
 import SearchPage from "@routes/SearchPage"
 import EmailsPage from "@routes/EmailsPage"
+import SignalsPage from "@routes/SignalsPage"
 
 export {
   Root,
@@ -16,4 +17,5 @@ export {
   ChartsPage,
   SearchPage,
   EmailsPage,
+  SignalsPage,
 }

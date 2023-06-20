@@ -22,6 +22,7 @@ import {
   SearchPage,
   EmailsPage,
   ComplaintsPage,
+  SignalsPage,
 } from "@common/Routes"
 
 const App = () => {
@@ -51,6 +52,10 @@ const App = () => {
         {
           path: "/emails",
           element: <EmailsPage />,
+        },
+        {
+          path: "/signals",
+          element: <SignalsPage />,
         },
       ]
     },
