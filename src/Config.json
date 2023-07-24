@@ -1,3 +1,4 @@
 {
-  "apiUrl": "https://api-web.siya-eip.com/"
+  "webApiUrl": "http://localhost:8000",
+  "mobileApiUrl": "http://localhost:3098"
 }

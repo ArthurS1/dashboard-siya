@@ -47,7 +47,7 @@ const SearchPage = () => {
     }
     axios({
       method: 'get',
-      baseURL: Config.apiUrl,
+      baseURL: Config.webApiUrl,
       url: '/feedback/getAll',
       params: {
         email: credentials.data.email,

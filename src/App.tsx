@@ -4,8 +4,7 @@ import {
 } from "react-router-dom"
 import {
   useEffect,
-  useReducer
-} from "react"
+  useReducer } from "react"
 import Cookies from "js-cookie"
 
 import {
@@ -23,6 +22,7 @@ import {
   EmailsPage,
   ComplaintsPage,
   SignalsPage,
+  UsersPage,
 } from "@common/Routes"
 
 const App = () => {
@@ -56,6 +56,10 @@ const App = () => {
         {
           path: "/signals",
           element: <SignalsPage />,
+        },
+        {
+          path: "/users",
+          element: <UsersPage />,
         },
       ]
     },

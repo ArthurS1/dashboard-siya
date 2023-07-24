@@ -47,7 +47,7 @@ const Complaint = ({ message }: { message: UserMessage }) => {
   }
   const getAttachment = (id: number) => {
     window.open(
-      `${Config.apiUrl}feedback/getImgById?email=${credentials.data?.email}&password=${credentials.data?.password}&id=${id}`,
+      `${Config.webApiUrl}feedback/getImgById?email=${credentials.data?.email}&password=${credentials.data?.password}&id=${id}`,
     '_blank');
   }
 

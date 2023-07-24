@@ -26,7 +26,7 @@ const apiGet = (
   }
   axios({
       method: 'get',
-      baseURL: Config.apiUrl,
+      baseURL: Config.webApiUrl,
       url: route,
       params,
     }).then((res) => {
@@ -63,7 +63,7 @@ const apiPost = (
   }
   axios({
       method: 'post',
-      baseURL: Config.apiUrl,
+      baseURL: Config.webApiUrl,
       url: route,
       data,
     }).catch((err) => {
