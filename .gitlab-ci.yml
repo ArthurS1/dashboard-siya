@@ -8,11 +8,11 @@ variables:
     DOCKER_TLS_CERTDIR: ""
 
 stages:
-    - build-dashboard-admin
-    - deploy-dashboard-admin
+    - build-dashboard
+    - deploy-dashboard
 
-build-dashboard-admin:
-    stage: build-dashboard-admin
+build-dashboard:
+    stage: build-dashboard
     image: docker:20.10.17
     services:
         - docker:20.10.17-dind
@@ -24,16 +24,18 @@ build-dashboard-admin:
     script:
         - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token registry.gitlab.com --password-stdin
         - docker network create traefik-net
-        - cp .env.dist .env
+        - cp .env.$CI_COMMIT_REF_NAME .env
         - docker-compose build --no-cache
         - docker tag $IMAGE_NAME_DASHBOARD_ADMIN:$IMAGE_TAG $NEW_IMAGE_NAME:$COMMIT_TAG
         - docker push $NEW_IMAGE_NAME:$COMMIT_TAG
         - docker system prune -f
     only:
       - main
+      - staging
+      - dev
 
-deploy-dev:
-  stage: deploy-dashboard-admin
+deploy-dashboard-dev:
+  stage: deploy-dashboard
   image:
     name: debian:stable-slim
   before_script:
@@ -41,32 +43,110 @@ deploy-dev:
     - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
     - eval $(ssh-agent -s)
     - mkdir -p ~/.ssh
-    - echo "$PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+    - echo "$PRIVATE_KEY_DEV" | tr -d '\r' > ~/.ssh/id_ed25519
     - chmod 600 ~/.ssh/id_ed25519
     - ssh-keyscan -H $SERVER_DEV_IPv4 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
     # Export to server var env
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "export NEW_IMAGE_NAME=$NEW_IMAGE_NAME"
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "export COMMIT_TAG=$COMMIT_TAG"
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "export IMAGE_NAME_DASHBOARD_ADMIN=$IMAGE_NAME_DASHBOARD_ADMIN"
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "export IMAGE_TAG=$IMAGE_TAG"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "export NEW_IMAGE_NAME=$NEW_IMAGE_NAME"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "export COMMIT_TAG=$COMMIT_TAG"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "export IMAGE_NAME_DASHBOARD_ADMIN=$IMAGE_NAME_DASHBOARD_ADMIN"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "export IMAGE_TAG=$IMAGE_TAG"
     # Login to the private gitlab registry
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token registry.gitlab.com --password-stdin"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token registry.gitlab.com --password-stdin"
     # Pull the image from the private registry
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "docker pull $NEW_IMAGE_NAME:$COMMIT_TAG"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "docker pull $NEW_IMAGE_NAME:$COMMIT_TAG"
     # Tag the image
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "docker tag $NEW_IMAGE_NAME:$COMMIT_TAG $IMAGE_NAME_DASHBOARD_ADMIN:$IMAGE_TAG"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "docker tag $NEW_IMAGE_NAME:$COMMIT_TAG $IMAGE_NAME_DASHBOARD_ADMIN:$IMAGE_TAG"
     # Pull from gitlab
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "cd $DEPLOYMENT_LOCATION && git pull"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "cd $DEPLOYMENT_LOCATION && git pull"
      # Update .env
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "cd $DEPLOYMENT_LOCATION && cp .env.dist .env"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "cd $DEPLOYMENT_LOCATION && cp .env.dev .env"
     # Stop and remove the old containers
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "cd $DEPLOYMENT_LOCATION && docker-compose down"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "cd $DEPLOYMENT_LOCATION && docker-compose down"
     # Start the new containers
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "cd $DEPLOYMENT_LOCATION && docker-compose up -d"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "cd $DEPLOYMENT_LOCATION && docker-compose up -d"
     # Remove unused images
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "docker images -a | grep "main" | awk '{print $3}' | xargs docker rmi; echo OK"
-    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER "docker system prune -f"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "docker images -a | grep "main" | awk '{print $3}' | xargs docker rmi; echo OK"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_DEV "docker system prune -f"
+  only:
+    - dev
+
+deploy-dashboard-staging:
+  stage: deploy-dashboard
+  image:
+    name: debian:stable-slim
+  before_script:
+    # Install dependencies to connect over ssh in the targeted server
+    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - echo "$PRIVATE_KEY_STAGING" | tr -d '\r' > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - ssh-keyscan -H $SERVER_STAGING_IPv4 >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    # Export to server var env
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "export NEW_IMAGE_NAME=$NEW_IMAGE_NAME"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "export COMMIT_TAG=$COMMIT_TAG"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "export IMAGE_NAME_DASHBOARD_ADMIN=$IMAGE_NAME_DASHBOARD_ADMIN"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "export IMAGE_TAG=$IMAGE_TAG"
+    # Login to the private gitlab registry
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token registry.gitlab.com --password-stdin"
+    # Pull the image from the private registry
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "docker pull $NEW_IMAGE_NAME:$COMMIT_TAG"
+    # Tag the image
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "docker tag $NEW_IMAGE_NAME:$COMMIT_TAG $IMAGE_NAME_DASHBOARD_ADMIN:$IMAGE_TAG"
+    # Pull from gitlab
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "cd $DEPLOYMENT_LOCATION && git pull"
+     # Update .env
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "cd $DEPLOYMENT_LOCATION && cp .env.staging .env"
+    # Stop and remove the old containers
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "cd $DEPLOYMENT_LOCATION && docker-compose down"
+    # Start the new containers
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "cd $DEPLOYMENT_LOCATION && docker-compose up -d"
+    # Remove unused images
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "docker images -a | grep "main" | awk '{print $3}' | xargs docker rmi; echo OK"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_STAGING "docker system prune -f"
+  only:
+    - staging
+
+deploy-dashboard-prod:
+  stage: deploy-dashboard
+  image:
+    name: debian:stable-slim
+  before_script:
+    # Install dependencies to connect over ssh in the targeted server
+    - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - echo "$PRIVATE_KEY_PROD" | tr -d '\r' > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - ssh-keyscan -H $SERVER_PROD_IPv4 >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    # Export to server var env
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "export NEW_IMAGE_NAME=$NEW_IMAGE_NAME"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "export COMMIT_TAG=$COMMIT_TAG"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "export IMAGE_NAME_DASHBOARD_ADMIN=$IMAGE_NAME_DASHBOARD_ADMIN"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "export IMAGE_TAG=$IMAGE_TAG"
+    # Login to the private gitlab registry
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token registry.gitlab.com --password-stdin"
+    # Pull the image from the private registry
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "docker pull $NEW_IMAGE_NAME:$COMMIT_TAG"
+    # Tag the image
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "docker tag $NEW_IMAGE_NAME:$COMMIT_TAG $IMAGE_NAME_DASHBOARD_ADMIN:$IMAGE_TAG"
+    # Pull from gitlab
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "cd $DEPLOYMENT_LOCATION && git pull"
+     # Update .env
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "cd $DEPLOYMENT_LOCATION && cp .env.main .env"
+    # Stop and remove the old containers
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "cd $DEPLOYMENT_LOCATION && docker-compose down"
+    # Start the new containers
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "cd $DEPLOYMENT_LOCATION && docker-compose up -d"
+    # Remove unused images
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "docker images -a | grep "main" | awk '{print $3}' | xargs docker rmi; echo OK"
+    - ssh -o StrictHostKeyChecking=no $DEPLOYMENT_USER@$DEPLOYMENT_SERVER_PROD "docker system prune -f"
   only:
     - main
