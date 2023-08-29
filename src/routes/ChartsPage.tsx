@@ -17,10 +17,11 @@ import {
   Tooltip,
   Line,
 } from "recharts"
-import React, { useEffect } from "react"
+import { useContext, useState } from "react"
 
 import FeedbackData from "@interfaces/FeedbackData"
 import NewsletterData from "@interfaces/NewsletterData"
+import ApkDownloadsData from "interfaces/ApkDownloadsData"
 import {
   CredentialsContext,
 } from "@common/Credentials"
@@ -43,12 +44,13 @@ const ChartsPage = () => {
     tmp.setMonth(tmp.getMonth() - 1)
     return tmp
   }
-  const credentials = React.useContext(CredentialsContext);
+  const credentials = useContext(CredentialsContext);
   const toast = useToast()
-  const [timeFrom, setTimeFrom] = React.useState(formatDate(getLastMonthDate()))
-  const [timeTo, setTimeTo] = React.useState(formatDate(getTodayDate()))
-  const [feedbacks, setFeedbacks] = React.useState<FeedbackData[] | undefined>(undefined)
-  const [newletterAccounts, setNewsletterAccounts] = React.useState<NewsletterData[] | undefined>(undefined)
+  const [timeFrom, setTimeFrom] = useState(formatDate(getLastMonthDate()))
+  const [timeTo, setTimeTo] = useState(formatDate(getTodayDate()))
+  const [feedbacks, setFeedbacks] = useState<FeedbackData[] | undefined>(undefined)
+  const [newletterAccounts, setNewsletterAccounts] = useState<NewsletterData[] | undefined>(undefined)
+  const [apkDownloaded, setApkDownloaded] = useState<ApkDownloadsData[] | undefined>(undefined)
   const apply = () => {
     apiGet(
       "/feedback/getAll",
@@ -66,6 +68,14 @@ const ChartsPage = () => {
       toast,
       credentials
     )
+    apiGet(
+      "/apk/getnbr",
+      {},
+      (res) => setApkDownloaded(res.data),
+      (_) => { },
+      toast,
+      credentials
+    )
   }
   const sameDay = (d1: Date, d2: Date): boolean => {
     return (
@@ -74,6 +84,17 @@ const ChartsPage = () => {
       d1.getMonth === d2.getMonth
     )
   }
+  const apkDownloadsData: DataPerDay[] | undefined =
+    apkDownloaded
+      ?.map((a: ApkDownloadsData): DataPerDay => { return {date: new Date(a.date), data: a.nbr} } )
+      ?.reduce((acc: DataPerDay[], c: DataPerDay): DataPerDay[] => {
+        if (acc.length === 0)
+          return [c]
+        else {
+          let last = acc[acc.length]
+          return acc.concat({date: c.date, data: c.data + last.data})
+        }
+      }, [])
   const newsletterAccountsData: DataPerDay[] | undefined =
     newletterAccounts?.reduce((acc: DataPerDay[] | undefined, val: NewsletterData): DataPerDay[] | undefined => {
       let currentValDate = new Date(val.date)
@@ -148,6 +169,20 @@ const ChartsPage = () => {
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} height={10} />
             <YAxis label='enregistrements' />
+            <XAxis label='jours' />
+            <Tooltip />
+            <Line type="monotone" dataKey="data" stroke="#8884d8" />
+          </LineChart>
+        </GridItem>
+        <GridItem>
+          <Heading fontSize='lg'>Nombre cumulé de téléchargements de l'APK</Heading>
+          <LineChart
+            width={500}
+            height={300}
+            data={apkDownloadsData}
+          >
+            <CartesianGrid strokeDasharray="3 3" vertical={false} height={10} />
+            <YAxis label='apk telecharges' />
             <XAxis label='jours' />
             <Tooltip />
             <Line type="monotone" dataKey="data" stroke="#8884d8" />
