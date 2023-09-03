@@ -8,6 +8,7 @@ import SearchPage from "@routes/SearchPage"
 import EmailsPage from "@routes/EmailsPage"
 import SignalsPage from "@routes/SignalsPage"
 import UsersPage from "@routes/UsersPage"
+import ReferralsPage from "@routes/ReferralsPage"
 
 export {
   Root,
@@ -20,4 +21,5 @@ export {
   EmailsPage,
   SignalsPage,
   UsersPage,
+  ReferralsPage,
 }

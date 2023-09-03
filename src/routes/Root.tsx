@@ -50,6 +50,10 @@ const Root = () => {
     {
       buttonContent: "Utilisateurs",
       path: "/users"
+    },
+    {
+      buttonContent: "Parrainages",
+      path: "/referrals"
     }
   ]
   const navigate = useNavigate()

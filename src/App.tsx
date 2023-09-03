@@ -23,6 +23,7 @@ import {
   ComplaintsPage,
   SignalsPage,
   UsersPage,
+  ReferralsPage,
 } from "@common/Routes"
 
 const App = () => {
@@ -60,6 +61,10 @@ const App = () => {
         {
           path: "/users",
           element: <UsersPage />,
+        },
+        {
+          path: "/referrals",
+          element: <ReferralsPage />,
         },
       ]
     },
