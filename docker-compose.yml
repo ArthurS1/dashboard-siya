@@ -1,19 +1,42 @@
-version: '3.3'
+version: '3.4'
 
 networks:
     traefik-net:
         name: ${TRAEFIK_NETWORK_NAME}
         external: true
+    dashboard-net:
+        name: ${DASHBOARD_NETWORK_NAME}
+
+volumes:
+    typesense-data:
 
 services:
+    typesense-service:
+        container_name: ${TYPESENSE_CONTAINER_NAME}
+        image: ${TYPESENSE_IMAGE_NAME}:${TYPESENSE_IMAGE_TAG}
+        restart: ${TYPESENSE_RESTART_POLICY}
+        command: '--data-dir /data --api-key=xyz --enable-cors'
+        ports:
+            - "${TYPESENSE_HOST_PORT}:${TYPESENSE_CONTAINER_PORT}"
+        volumes:
+            - ./${TYPESENSE_VOLUME_NAME}:/data
+        networks:
+            - ${DASHBOARD_NETWORK_NAME}
+        logging:
+            driver: gelf
+            options:
+                gelf-address: "udp://localhost:50000"
+                tag: ${DASHBOARD_CONTAINER_NAME}
     dashboard-service:
         container_name: ${DASHBOARD_CONTAINER_NAME}
         image: ${DASHBOARD_IMAGE_NAME}:${DASHBOARD_IMAGE_TAG}
         build:
             context: .
             dockerfile: Dockerfile
+        restart: ${DASHBOARD_RESTART_POLICY}
         networks:
             - ${TRAEFIK_NETWORK_NAME}
+            - ${DASHBOARD_NETWORK_NAME}
         logging:
             driver: gelf
             options:
