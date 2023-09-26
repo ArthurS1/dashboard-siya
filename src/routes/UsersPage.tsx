@@ -16,33 +16,30 @@ import {
 import {
   useState
 } from "react"
-import Config from "../Config.json"
 import Axios from "axios"
 
 import UserData from "@interfaces/User"
+import Config from "../Config.json"
 import User from "@components/User"
-
-enum SortingMode {
-  LowToHigh,
-  HighToLow,
-  NoSort,
-}
+import {
+  default as ToggleableArray,
+  Order
+} from "@common/ToggleableArray"
 
 async function refreshAllUsers(): Promise<UserData[]> {
-    let users = (await Axios.get(`${Config.mobileApiUrl}/users/getAll`)).data;
-    return users;
+  let users = (await Axios.get(`${Config.mobileApiUrl}/users/getAll`)).data;
+  return users;
 }
 
 const UsersPage = () => {
   const [reloading, setReloading] = useState(false)
-  const [users, setUsers] = useState<UserData[]>([])
-  const [emailMode, setEmailMode] = useState(SortingMode.NoSort)
+  const [users, setUsers] = useState(new ToggleableArray<UserData>(0))
   const toast = useToast()
 
   const reload = () => {
     setReloading(true)
     refreshAllUsers()
-      .then((a) => setUsers(a))
+      .then((a) => setUsers(new ToggleableArray(...a)))
       .then((_) => setReloading(false))
       .catch((err) => toast({
         title: 'Erreur',
@@ -53,28 +50,9 @@ const UsersPage = () => {
       }))
   }
   const removeRowWithId = (id: string) => {
-    setUsers(users.filter((a) => a._id !== id))
+    setUsers(new ToggleableArray(...(users.filter((a) => a._id !== id))))
   }
   const userList = users.map((u) => <User key={u._id} for={u} onRemove={removeRowWithId} />)
-  const sortTable = (
-    mode: SortingMode,
-    setMode: (a: SortingMode) => void,
-    sortHighToLow: (a: any, b: any) => number,
-    sortLowToHigh: (a: any, b: any) => number
-  ) => {
-    switch (mode) {
-      case SortingMode.LowToHigh:
-        users?.sort(sortHighToLow)
-        setMode(SortingMode.HighToLow)
-        break;
-      case SortingMode.HighToLow:
-        users?.sort(sortLowToHigh)
-        setMode(SortingMode.LowToHigh)
-        break;
-      default:
-        setMode(SortingMode.HighToLow)
-    }
-  }
 
   return (
     <Box m={10} p={5} bg="white" borderRadius={10} shadow="md">
@@ -85,14 +63,12 @@ const UsersPage = () => {
           onClick={reload}
         >Recharger</Button>
         <Button m='1'
-        onClick={() => sortTable(
-          emailMode,
-          setEmailMode,
-          (a, b) => Number(b.email > a.email),
-          (a, b) => Number(a.email > b.email)
-        )}
-        rightIcon={emailMode === SortingMode.HighToLow ?
-          <ArrowUpIcon /> : <ArrowDownIcon />}
+          onClick={() => users.sortToggle({
+            fromHighToLow: (a, b) => Number(b.email > a.email),
+            fromLowToHigh: (a, b) => Number(a.email > b.email)
+          })}
+          rightIcon={users.order === Order.HighToLow ?
+            <ArrowUpIcon /> : <ArrowDownIcon />}
         >A-Z</Button>
       </ButtonGroup>
       <Table variant='simple'>
