@@ -33,6 +33,9 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
+        environment:
+            - SHOWCASE_API=${SHOWCASE_API}
+            - MOBILE_API=${MOBILE_API}
         restart: ${DASHBOARD_RESTART_POLICY}
         networks:
             - ${TRAEFIK_NETWORK_NAME}
