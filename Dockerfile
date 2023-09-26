@@ -1,7 +1,5 @@
 FROM node:lts-alpine3.17
 
-ENV NODE_ENV development
-
 # make the 'app' folder the current working directory
 WORKDIR /app
 
