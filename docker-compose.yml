@@ -34,8 +34,8 @@ services:
             context: .
             dockerfile: Dockerfile
         environment:
-            - SHOWCASE_API=${SHOWCASE_API}
-            - MOBILE_API=${MOBILE_API}
+            - REACT_APP_SHOWCASE_API=${REACT_APP_SHOWCASE_API}
+            - REACT_APP_MOBILE_API=${REACT_APP_MOBILE_API}
         restart: ${DASHBOARD_RESTART_POLICY}
         networks:
             - ${TRAEFIK_NETWORK_NAME}
