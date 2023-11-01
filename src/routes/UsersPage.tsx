@@ -16,22 +16,21 @@ import {
 import {
   useState
 } from "react"
-import Axios from "axios"
-
-import UserData from "@interfaces/User"
-import Config from "../Config.json"
-import User from "@components/User"
+import UserData from "../interfaces/User"
+import {
+  useConfiguration
+} from "../contexts/Configuration"
+import User from "../components/User"
 import {
   default as ToggleableArray,
   Order
-} from "@common/ToggleableArray"
-
-async function refreshAllUsers(): Promise<UserData[]> {
-  let users = (await Axios.get(`${Config.mobileApiUrl}/users/getAll`)).data;
-  return users;
-}
+} from "../common/ToggleableArray"
+import { useMobileApi } from "common/MobileApi"
 
 const UsersPage = () => {
+  const conf = useConfiguration()
+  const mobileApi = useMobileApi(conf)
+
   const [reloading, setReloading] = useState(false)
   const [users, setUsers] = useState(new ToggleableArray<UserData>(0))
   const toast = useToast()
@@ -53,6 +52,11 @@ const UsersPage = () => {
     setUsers(new ToggleableArray(...(users.filter((a) => a._id !== id))))
   }
   const userList = users.map((u) => <User key={u._id} for={u} onRemove={removeRowWithId} />)
+
+  async function refreshAllUsers(): Promise<UserData[]> {
+    const users = await mobileApi.getAllUsers()
+    return users.data
+  }
 
   return (
     <Box m={10} p={5} bg="white" borderRadius={10} shadow="md">

@@ -1,3 +1,8 @@
+/*
+ * ToggleableArray is a handy function to help with sorting arrays
+ * depending on a toggled order (high to low, low to high).
+ */
+
 enum Order {
   LowToHigh,
   HighToLow,

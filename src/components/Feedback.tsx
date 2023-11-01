@@ -11,34 +11,32 @@ import {
   CheckIcon
 } from "@chakra-ui/icons"
 import {
-  useContext, useState
+  useState
 } from "react"
 
-import Rating from "@components/Rating"
-import UserMessage from "@interfaces/UserMessage"
+import Rating from "../components/Rating"
+import UserMessage from "../interfaces/UserMessage"
 import {
-  apiPost,
-} from "@common/ApiCall"
+  useWebApi,
+} from "../common/WebApi"
 import {
-  CredentialsContext
-} from "@common/Credentials"
+  useConfiguration
+} from "../contexts/Configuration"
+import {
+  useCredentials
+} from "../contexts/Credentials"
 
 const Feedback = ({message}: {message: UserMessage}) => {
-  const credentials = useContext(CredentialsContext)
   const toast = useToast()
+
+  const creds = useCredentials()
+  const conf = useConfiguration()
+  const webApi = useWebApi(conf, creds)
+
   const [importance, setImportance] = useState(message.importance ?? 0)
   const updateImportance = (id: number, importance: number) => {
-    apiPost(
-      '/feedback/changeImportance',
-      {
-        feedback: {
-          id,
-          importance,
-        }
-      },
-      toast,
-      credentials
-    )
+    webApi.setFeedbackImportance(id, importance)
+      .catch((err) => toast(err))
   }
 
   return (

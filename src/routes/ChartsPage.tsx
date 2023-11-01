@@ -17,15 +17,18 @@ import {
   Tooltip,
   Line,
 } from "recharts"
-import { useContext, useState } from "react"
+import { useState } from "react"
 
-import FeedbackData from "@interfaces/FeedbackData"
-import NewsletterData from "@interfaces/NewsletterData"
+import FeedbackData from "../interfaces/FeedbackData"
+import NewsletterData from "../interfaces/NewsletterData"
 import ApkDownloadsData from "interfaces/ApkDownloadsData"
 import {
-  CredentialsContext,
-} from "@common/Credentials"
-import { apiGet } from "@common/ApiCall"
+  useCredentials,
+} from "../contexts/Credentials"
+import {
+  useConfiguration
+} from "../contexts/Configuration"
+import { useWebApi } from "common/WebApi"
 
 interface DataPerDay {
   date: Date,
@@ -33,6 +36,12 @@ interface DataPerDay {
 }
 
 const ChartsPage = () => {
+  const toast = useToast()
+
+  const creds = useCredentials()
+  const conf = useConfiguration()
+  const webApi = useWebApi(conf, creds)
+
   const formatDate = (date: Date) => [
     date.getFullYear(),
     String(date.getMonth()).padStart(2, '0'),
@@ -44,38 +53,21 @@ const ChartsPage = () => {
     tmp.setMonth(tmp.getMonth() - 1)
     return tmp
   }
-  const credentials = useContext(CredentialsContext);
-  const toast = useToast()
   const [timeFrom, setTimeFrom] = useState(formatDate(getLastMonthDate()))
   const [timeTo, setTimeTo] = useState(formatDate(getTodayDate()))
   const [feedbacks, setFeedbacks] = useState<FeedbackData[] | undefined>(undefined)
   const [newletterAccounts, setNewsletterAccounts] = useState<NewsletterData[] | undefined>(undefined)
   const [apkDownloaded, setApkDownloaded] = useState<ApkDownloadsData[] | undefined>(undefined)
   const apply = () => {
-    apiGet(
-      "/feedback/getAll",
-      {},
-      (res) => setFeedbacks(res.data),
-      (_) => { },
-      toast,
-      credentials
-    )
-    apiGet(
-      "/newsletter/getAllUser",
-      {},
-      (res) => setNewsletterAccounts(res.data),
-      (_) => { },
-      toast,
-      credentials
-    )
-    apiGet(
-      "/apk/getnbr",
-      {},
-      (res) => setApkDownloaded(res.data),
-      (_) => { },
-      toast,
-      credentials
-    )
+    webApi.getAllFeedbacks()
+      .then((res) => setFeedbacks(res.data))
+      .catch((err) => toast(err))
+    webApi.getAllSubscribers()
+      .then((res) => setNewsletterAccounts(res.data))
+      .catch((err) => toast(err))
+    webApi.getApkDownloadNumbers()
+      .then((res) => setApkDownloaded(res.data))
+      .catch((err) => toast(err))
   }
   const sameDay = (d1: Date, d2: Date): boolean => {
     return (

@@ -1,5 +1,4 @@
-import {
-  Button,
+import { Button,
   InputGroup,
   Input,
   InputRightAddon,
@@ -13,15 +12,24 @@ import {
   Thead,
 } from "@chakra-ui/react"
 import React, { useContext } from "react"
-import FeedbackData from "@interfaces/FeedbackData"
-import axios from "axios"
-import Config from "../Config.json"
+
+import {
+  useWebApi
+} from "../common/WebApi"
+import FeedbackData from "../interfaces/FeedbackData"
+import {
+  useConfiguration
+} from "../contexts/Configuration"
 import {
   CredentialsContext,
-} from "@common/Credentials"
+} from "../contexts/Credentials"
 
 const SearchPage = () => {
-  const credentials = useContext(CredentialsContext)
+
+  const creds = useContext(CredentialsContext)
+  const conf = useConfiguration()
+  const webApi = useWebApi(conf, creds)
+
   const toast = useToast()
   const [table, setTable] = React.useState<FeedbackData[] | undefined>(undefined)
   const [searchBox, setSearchBox] = React.useState('')
@@ -35,7 +43,7 @@ const SearchPage = () => {
         </Tr>
         ))
   const search = () => {
-    if (!credentials.data) {
+    if (!creds.data) {
       toast({
         title: 'Erreur',
         description: 'Vérifiez que vous êtes connecté',
@@ -45,26 +53,9 @@ const SearchPage = () => {
       })
       return;
     }
-    axios({
-      method: 'get',
-      baseURL: Config.webApiUrl,
-      url: '/feedback/getAll',
-      params: {
-        email: credentials.data.email,
-        password: credentials.data.password,
-      }
-    }).then((res) => {
-      setTable(res.data)
-    }, (err) => {
-      console.log(err)
-      toast({
-        title: 'Erreur',
-        description: 'Erreur lors du chargement des données (voir console)',
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
-      })
-    })
+    webApi.getAllFeedbacks()
+      .then((res) => setTable(res.data))
+      .catch((err) => toast(err))
   }
 
   return (

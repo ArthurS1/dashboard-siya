@@ -17,16 +17,20 @@ import {
 import Cookies from "js-cookie"
 
 import {
-  apiGet
-} from "@common/ApiCall"
-import {
-  CredentialsDispatchContext
-} from "@common/Credentials"
+  CredentialsDispatchContext, useCredentials
+} from "../contexts/Credentials"
+import { useWebApi } from "../common/WebApi"
+import { useConfiguration } from "contexts/Configuration"
 
 const AuthPage = () => {
-  const dispatch = useContext(CredentialsDispatchContext)
-  const navigate = useNavigate()
   const toast = useToast()
+  const navigate = useNavigate()
+
+  const dispatch = useContext(CredentialsDispatchContext)
+  const creds = useCredentials()
+  const conf = useConfiguration()
+
+  const webApi = useWebApi(conf, creds)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -42,10 +46,8 @@ const AuthPage = () => {
 
   const onLogginAttempt = () => {
     setLoading(true)
-    apiGet(
-      "/admin/getCurrAdmPass",
-      {email, password},
-      (_) => {
+    webApi.login(email, password)
+      .then(() => {
         dispatch({
           type: "modified",
           data: {
@@ -53,16 +55,16 @@ const AuthPage = () => {
             password,
           }
         })
-        Cookies.set("email", email, {expires: 1})
-        Cookies.set("password", password, {expires: 1})
+        Cookies.set("email", email, { expires: 1 })
+        Cookies.set("password", password, { expires: 1 })
         navigate("/graphs")
-      },
-      (_) => {
-        setLoading(false);
-      },
-      toast,
-      {data: null}
-    )
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.debug(err)
+        toast(err)
+        setLoading(false)
+      })
   }
 
   return (
@@ -80,20 +82,20 @@ const AuthPage = () => {
           value={email}
           onChange={event => setEmail(event.currentTarget.value)}
           placeholder="email"
-          />
+        />
         <Input
           m={1} type='password'
           value={password}
           onChange={event => setPassword(event.currentTarget.value)}
           placeholder="admin password"
-          />
+        />
         <Button
           m={1}
           isLoading={loading}
           colorScheme='pink'
           w="100%"
           onClick={onLogginAttempt}
-          >Connexion</Button>
+        >Connexion</Button>
       </Box>
     </Flex>
   )

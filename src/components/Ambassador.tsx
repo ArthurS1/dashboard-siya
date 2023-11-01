@@ -1,3 +1,7 @@
+/*
+ * A row of the ambassador program list.
+ */
+
 import {
   Tr,
   Td,
@@ -12,17 +16,21 @@ import {
 import {
   useState
 } from "react"
-import Axios from "axios"
 
-import AmbassadorData from "@interfaces/AmbassadorData"
-import Config from "../Config.json"
-
+import AmbassadorData from "../interfaces/AmbassadorData"
+import {
+  useConfiguration
+} from "../contexts/Configuration"
+import { useMobileApi } from "common/MobileApi"
 
 const Ambassador = ({ for: user }: { for: AmbassadorData }) => {
+  const conf = useConfiguration()
+  const mobileApi = useMobileApi(conf)
 
   const [level, setLevel] = useState(user.amb_level)
-  const updateLevel = (id: string, level: number) => {
-    Axios.patch(`${Config.mobileApiUrl}/users/update/${id}`, { data: { amb_level: level } })
+
+  function updateLevel(id: string, level: number) {
+    mobileApi.updateUserAmbassadorLevel(id, level)
       .then(() => setLevel(level))
   }
 

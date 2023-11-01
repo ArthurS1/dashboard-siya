@@ -14,19 +14,21 @@ import {
 } from "@chakra-ui/icons"
 import {
   useState,
-  useContext,
 } from "react"
 
 import {
-  CredentialsContext
-} from "@common/Credentials"
-import {
-  apiPost
-} from "@common/ApiCall"
+  useCredentials
+} from "../contexts/Credentials"
+import { useConfiguration } from "contexts/Configuration"
+import { useWebApi } from "common/WebApi"
 
 const EmailsPage = () => {
-  const credentials = useContext(CredentialsContext)
   const toast = useToast()
+
+  const creds = useCredentials()
+  const conf = useConfiguration()
+  const webApi = useWebApi(conf, creds)
+
   const [settings, setSettings] = useState({
     isModalOpen: false,
     sendToAllUsers: true,
@@ -36,19 +38,11 @@ const EmailsPage = () => {
 
   const sendEmail = (content: string) => {
     if (settings.csv) {
-      apiPost(
-        "/newsletter/customizedMail",
-        { template: content, users: settings.csv},
-        toast,
-        credentials
-      )
+      webApi.sendEmail(content, settings.csv)
+        .catch((err) => toast(err))
     } else {
-      apiPost(
-        "/newsletter/customizedMail",
-        { template: content },
-        toast,
-        credentials
-      )
+      webApi.sendEmail(content, undefined)
+        .catch((err) => toast(err))
     }
   }
 

@@ -6,7 +6,7 @@ import {
   Badge,
   Flex,
 } from "@chakra-ui/react"
-import { Signal } from '@routes/SignalsPage';
+import { Signal } from '../routes/SignalsPage'; //TODO : wtf why from signalspage
 
 const SlideOver = ({ signal, setShow }: { signal: Signal, setShow: any }) => {
 

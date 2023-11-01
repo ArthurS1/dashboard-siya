@@ -1,12 +1,21 @@
+/*
+ * Credentials of the current user of the dashboard.
+ */
+
 import {
   createContext,
   Dispatch,
+  useContext,
 } from "react"
 
 import {
   Credentials,
   CredentialsAction,
-} from "@interfaces/Credentials"
+} from "../interfaces/Credentials"
+
+export function useCredentials() {
+  return useContext(CredentialsContext)
+}
 
 export function credentialsReducer(
   credentials: Credentials,

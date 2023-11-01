@@ -4,14 +4,17 @@ import {
 } from "react-router-dom"
 import {
   useEffect,
-  useReducer } from "react"
+  useReducer
+} from "react"
 import Cookies from "js-cookie"
 
 import {
   CredentialsContext,
   CredentialsDispatchContext,
-  credentialsReducer,
-} from "@common/Credentials"
+  credentialsReducer, } from "./contexts/Credentials"
+import {
+  ConfigurationContext,
+} from "./contexts/Configuration"
 import {
   Root,
   ErrorPage,
@@ -24,10 +27,11 @@ import {
   SignalsPage,
   UsersPage,
   ReferralsPage,
-} from "@common/Routes"
+} from "./common/Routes"
+import Environment from "common/Environment"
 
 const App = () => {
-  const [credentials, dispatch] = useReducer(credentialsReducer, {data: null})
+  const [credentials, dispatch] = useReducer(credentialsReducer, { data: null })
   const router = createBrowserRouter([
     {
       path: "/",
@@ -80,21 +84,23 @@ const App = () => {
 
     if (email && password) {
       dispatch({
-          type: "modified",
-          data: {
-            email,
-            password,
-          }
-        })
+        type: "modified",
+        data: {
+          email,
+          password,
+        }
+      })
     }
   }, [])
 
   return (
-    <CredentialsContext.Provider value={credentials}>
-      <CredentialsDispatchContext.Provider value={dispatch}>
-        <RouterProvider router={router} />
-      </CredentialsDispatchContext.Provider>
-    </CredentialsContext.Provider>
+    <ConfigurationContext.Provider value={new Environment()}>
+      <CredentialsContext.Provider value={credentials}>
+        <CredentialsDispatchContext.Provider value={dispatch}>
+          <RouterProvider router={router} />
+        </CredentialsDispatchContext.Provider>
+      </CredentialsContext.Provider>
+    </ConfigurationContext.Provider>
   )
 }
 

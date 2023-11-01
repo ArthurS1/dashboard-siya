@@ -13,41 +13,38 @@ import {
   DownloadIcon,
 } from "@chakra-ui/icons"
 import {
-  useContext, useState
+  useState
 } from "react"
 
-import UserMessage from "@interfaces/UserMessage"
+import UserMessage from "../interfaces/UserMessage"
 import {
-  apiPost,
-} from "@common/ApiCall"
+  useWebApi,
+} from "../common/WebApi"
 import {
-  CredentialsContext
-} from "@common/Credentials"
-import Config from '../Config.json'
+  useCredentials
+} from "../contexts/Credentials"
+import {
+  useConfiguration
+} from "../contexts/Configuration"
 
 const Complaint = ({ message }: { message: UserMessage }) => {
-  const credentials = useContext(CredentialsContext)
   const toast = useToast()
+
+  const creds = useCredentials()
+  const conf = useConfiguration()
+  const webApi = useWebApi(conf, creds)
+
   const [importance, setImportance] = useState(message.importance ?? 0)
   const updateImportance = (id: number, importance: number) => {
-    apiPost(
-      '/feedback/changeImportance',
-      {
-        feedback: {
-          id,
-          importance,
-        }
-      },
-      toast,
-      credentials
-    )
+    webApi.setFeedbackImportance(id, importance)
+      .catch((err) => toast(err))
   }
   const mailTo = (email: string) => {
     window.location.href = `mailto:${email}`
   }
   const getAttachment = (id: number) => {
     window.open(
-      `${Config.webApiUrl}feedback/getImgById?email=${credentials.data?.email}&password=${credentials.data?.password}&id=${id}`,
+      `${conf.baseUrlFor("SHOWCASE_API")}feedback/getImgById?email=${creds.data?.email}&password=${creds.data?.password}&id=${id}`,
     '_blank');
   }
 

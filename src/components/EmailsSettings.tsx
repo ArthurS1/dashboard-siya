@@ -18,7 +18,7 @@ import {
   useFilePicker
 } from "use-file-picker"
 
-import EmailsSettingsData from "@interfaces/EmailsSettingsData.interface"
+import EmailsSettingsData from "../interfaces/EmailsSettingsData"
 
 const EmailsSettings = ({ state, setState }: {
   state: EmailsSettingsData,

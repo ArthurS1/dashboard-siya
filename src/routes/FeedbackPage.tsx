@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { useState } from "react"
 import {
   Button,
   ButtonGroup,
@@ -16,13 +16,14 @@ import {
 } from "@chakra-ui/icons"
 
 import UserMessage from "interfaces/UserMessage"
-import Feedback from "@components/Feedback"
+import Feedback from "../components/Feedback"
 import {
-  CredentialsContext
-} from "@common/Credentials"
+  useCredentials
+} from "../contexts/Credentials"
 import {
-  apiGet
-} from "common/ApiCall"
+  useWebApi
+} from "../common/WebApi"
+import { useConfiguration } from "contexts/Configuration"
 
 enum SortingMode {
   LowToHigh,
@@ -31,12 +32,16 @@ enum SortingMode {
 }
 
 const FeedbackPage = () => {
-  const credentials = useContext(CredentialsContext)
   const toast = useToast()
-  const [table, setTable] = React.useState<UserMessage[] | undefined>(undefined)
-  const [gradeMode, setGradeMode] = React.useState(SortingMode.NoSort)
-  const [dateMode, setDateMode] = React.useState(SortingMode.NoSort)
-  const [reloading, setReloading] = React.useState(false)
+
+  const creds = useCredentials()
+  const conf = useConfiguration()
+  const webApi = useWebApi(conf, creds)
+
+  const [table, setTable] = useState<UserMessage[] | undefined>(undefined)
+  const [gradeMode, setGradeMode] = useState(SortingMode.NoSort)
+  const [dateMode, setDateMode] = useState(SortingMode.NoSort)
+  const [reloading, setReloading] = useState(false)
 
   const sortTable = (
     mode: SortingMode,
@@ -59,17 +64,12 @@ const FeedbackPage = () => {
   }
   const reload = () => {
     setReloading(true)
-    apiGet(
-      "/feedback/getAll",
-      {},
-      (res) => {
+    webApi.getAllFeedbacks()
+    .then((res) => {
         setTable(res.data.filter((e: UserMessage) => e.isComplaint === 0))
         setReloading(false)
-      },
-      (_) => {setReloading(false)},
-      toast,
-      credentials
-    )
+      })
+    .catch((err) => toast(err))
   }
 
   return (

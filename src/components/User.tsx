@@ -12,24 +12,31 @@ import {
   ModalCloseButton,
   Input
 } from "@chakra-ui/react"
-import UserData from "@interfaces/User"
 import {
   useDisclosure
 } from "@chakra-ui/react"
 import {
   useState
 } from "react"
-import Axios from "axios"
 
-import Config from "../Config.json"
+import UserData from "../interfaces/User"
+import {
+  useConfiguration
+} from "../contexts/Configuration"
+import {
+  useMobileApi
+} from "../common/MobileApi"
 
 const User = ({ for: user, onRemove: f}: { for: UserData, onRemove: (id: string) => void }) => {
+
+  const conf = useConfiguration()
+  const mobileApi = useMobileApi(conf)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [emailVerification, setEmailVerification] = useState("")
 
   const deleteUser = () => {
-    Axios.delete(`${Config.mobileApiUrl}/users/${user._id}`)
+    mobileApi.deleteUser(user._id)
       .then(() => {
           f(user._id)
           onClose()

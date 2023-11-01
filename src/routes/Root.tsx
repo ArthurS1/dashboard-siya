@@ -4,7 +4,6 @@ import {
   Flex,
   Image,
   Spacer,
-  Box,
 } from "@chakra-ui/react"
 import {
   Link,

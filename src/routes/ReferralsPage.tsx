@@ -16,11 +16,13 @@ import {
 import {
   useState
 } from "react"
-import Axios from "axios"
 
-import Config from "../Config.json"
-import AmbassadorData from "@interfaces/AmbassadorData"
-import Ambassador from "@components/Ambassador"
+import AmbassadorData from "../interfaces/AmbassadorData"
+import Ambassador from "../components/Ambassador"
+import {
+  useConfiguration
+} from "../contexts/Configuration"
+import { useMobileApi } from "common/MobileApi"
 
 enum SortingMode {
   LowToHigh,
@@ -28,41 +30,46 @@ enum SortingMode {
   NoSort,
 }
 
-function sortToggle<T>(
-  table: Array<T> | undefined,
-  state: SortingMode,
-  setState: (a: SortingMode) => void,
-  { fromHighToLow: f1, fromHighToLow: f2 }:
-    {
-      fromHighToLow: (a: T, b: T) => number,
-      fromLowToHigh: (a: T, b: T) => number,
-    }
-) {
-  switch (state) {
-    case SortingMode.LowToHigh:
-      table?.sort(f1)
-      setState(SortingMode.HighToLow)
-      break;
-    case SortingMode.HighToLow:
-      table?.sort(f2)
-      setState(SortingMode.LowToHigh)
-      break;
-    default:
-      setState(SortingMode.HighToLow)
-  }
-}
-
-async function refreshAllUsers(): Promise<AmbassadorData[]> {
-    let users = (await Axios.get(`${Config.mobileApiUrl}/users/getAll`)).data;
-    return users;
-}
 
 const ReferralsPage = () => {
   const toast = useToast()
+
+  const conf = useConfiguration()
+  const mobileApi = useMobileApi(conf)
+
   const [table, setTable] = useState<AmbassadorData[]>([])
   const [reloading, setReloading] = useState(false)
   const [levelMode, setLevelMode] = useState(SortingMode.NoSort)
   const [shareMode, setShareMode] = useState(SortingMode.NoSort)
+
+  function sortToggle<T>(
+    table: Array<T> | undefined,
+    state: SortingMode,
+    setState: (a: SortingMode) => void,
+    { fromHighToLow: f1, fromHighToLow: f2 }:
+      {
+        fromHighToLow: (a: T, b: T) => number,
+        fromLowToHigh: (a: T, b: T) => number,
+      }
+  ) {
+    switch (state) {
+      case SortingMode.LowToHigh:
+        table?.sort(f1)
+        setState(SortingMode.HighToLow)
+        break;
+      case SortingMode.HighToLow:
+        table?.sort(f2)
+        setState(SortingMode.LowToHigh)
+        break;
+      default:
+        setState(SortingMode.HighToLow)
+    }
+  }
+
+  async function refreshAllUsers(): Promise<AmbassadorData[]> {
+    const users = await mobileApi.getAllUsers()
+    return users.data;
+  }
 
   const reload = () => {
     setReloading(true)
