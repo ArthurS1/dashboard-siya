@@ -1,4 +1,4 @@
-export default interface NewsletterData {
+interface NewsletterData {
   id: number,
   name: string,
   surname: string,
@@ -6,3 +6,5 @@ export default interface NewsletterData {
   subscribed: string,
   date: string,
 }
+
+export default NewsletterData;

@@ -8,54 +8,56 @@ import {
   Thead,
   Tr,
   useToast
-} from "@chakra-ui/react"
+} from '@chakra-ui/react';
 import {
   ArrowUpIcon,
   ArrowDownIcon,
-} from "@chakra-ui/icons"
+} from '@chakra-ui/icons';
 import {
   useState
-} from "react"
-import UserData from "../interfaces/User"
+} from 'react';
+import UserData from '../interfaces/User';
 import {
   useConfiguration
-} from "../contexts/Configuration"
-import User from "../components/User"
+} from '../contexts/Configuration';
+import User from '../components/User';
 import {
   default as ToggleableArray,
   Order
-} from "../common/ToggleableArray"
-import { useMobileApi } from "common/MobileApi"
+} from '../common/ToggleableArray';
+import { useMobileApi } from 'common/MobileApi';
 
 const UsersPage = () => {
-  const conf = useConfiguration()
-  const mobileApi = useMobileApi(conf)
+  const conf = useConfiguration();
+  const mobileApi = useMobileApi(conf);
 
-  const [reloading, setReloading] = useState(false)
-  const [users, setUsers] = useState(new ToggleableArray<UserData>(0))
-  const toast = useToast()
+  const [reloading, setReloading] = useState(false);
+  const [users, setUsers] = useState(new ToggleableArray<UserData>(0));
+  const toast = useToast();
 
   const reload = () => {
-    setReloading(true)
+    setReloading(true);
     refreshAllUsers()
       .then((a) => setUsers(new ToggleableArray(...a)))
-      .then((_) => setReloading(false))
+      .then((_) => setReloading(false)) // eslint-disable-line
       .catch((err) => toast({
         title: 'Erreur',
         description: err.message,
         status: 'error',
         duration: 9000,
         isClosable: true,
-      }))
-  }
+      }));
+  };
   const removeRowWithId = (id: string) => {
-    setUsers(new ToggleableArray(...(users.filter((a) => a._id !== id))))
-  }
-  const userList = users.map((u) => <User key={u._id} for={u} onRemove={removeRowWithId} />)
+    setUsers(new ToggleableArray(...(users.filter((a) => a._id !== id))));
+  };
+  const userList = users.map(
+    (u) => <User key={u._id} for={u} onRemove={removeRowWithId} />
+  );
 
   async function refreshAllUsers(): Promise<UserData[]> {
-    const users = await mobileApi.getAllUsers()
-    return users.data
+    const users = await mobileApi.getAllUsers();
+    return users.data;
   }
 
   return (
@@ -88,7 +90,7 @@ const UsersPage = () => {
         </Tbody>
       </Table>
     </Box>
-  )
-}
+  );
+};
 
 export default UsersPage;

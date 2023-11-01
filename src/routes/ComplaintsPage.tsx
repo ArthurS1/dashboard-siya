@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -9,23 +9,23 @@ import {
   Thead,
   Tr,
   useToast,
-} from "@chakra-ui/react"
+} from '@chakra-ui/react';
 import {
   ArrowUpIcon,
   ArrowDownIcon,
-} from "@chakra-ui/icons"
+} from '@chakra-ui/icons';
 
-import UserMessage from "../interfaces/UserMessage"
-import Complaint from "../components/Complaint"
+import UserMessage from '../interfaces/UserMessage';
+import Complaint from '../components/Complaint';
 import {
   useCredentials
-} from "../contexts/Credentials"
+} from '../contexts/Credentials';
 import {
   useConfiguration
-} from "../contexts/Configuration"
+} from '../contexts/Configuration';
 import {
   useWebApi
-} from "common/WebApi"
+} from 'common/WebApi';
 
 enum SortingMode {
   LowToHigh,
@@ -34,44 +34,44 @@ enum SortingMode {
 }
 
 const ComplaintsPage = () => {
-  const toast = useToast()
+  const toast = useToast();
 
-  const creds = useCredentials()
-  const conf = useConfiguration()
-  const webApi = useWebApi(conf, creds)
+  const creds = useCredentials();
+  const conf = useConfiguration();
+  const webApi = useWebApi(conf, creds);
 
-  const [table, setTable] = useState<UserMessage[] | undefined>(undefined)
-  const [dateMode, setDateMode] = useState(SortingMode.NoSort)
-  const [reloading, setReloading] = useState(false)
+  const [table, setTable] = useState<UserMessage[] | undefined>(undefined);
+  const [dateMode, setDateMode] = useState(SortingMode.NoSort);
+  const [reloading, setReloading] = useState(false);
 
   const sortTable = (
     mode: SortingMode,
     setMode: (a: SortingMode) => void,
-    sortHighToLow: (a: any, b: any) => number,
-    sortLowToHigh: (a: any, b: any) => number
+    sortHighToLow: (a: any, b: any) => number, // eslint-disable-line
+    sortLowToHigh: (a: any, b: any) => number // eslint-disable-line
   ) => {
     switch (mode) {
       case SortingMode.LowToHigh:
-        table?.sort(sortHighToLow)
-        setMode(SortingMode.HighToLow)
+        table?.sort(sortHighToLow);
+        setMode(SortingMode.HighToLow);
         break;
       case SortingMode.HighToLow:
-        table?.sort(sortLowToHigh)
-        setMode(SortingMode.LowToHigh)
+        table?.sort(sortLowToHigh);
+        setMode(SortingMode.LowToHigh);
         break;
       default:
-        setMode(SortingMode.HighToLow)
+        setMode(SortingMode.HighToLow);
     }
-  }
+  };
   const reload = () => {
-    setReloading(true)
+    setReloading(true);
     webApi.getAllFeedbacks()
       .then((res) => {
-        setTable(res.data.filter((e: UserMessage) => e.isComplaint === 1))
-        setReloading(false)
+        setTable(res.data.filter((e: UserMessage) => e.isComplaint === 1));
+        setReloading(false);
       })
-      .catch((err) => toast(err))
-  }
+      .catch((err) => toast(err));
+  };
 
   return (
     <Box m={10} p={5} bg="white" borderRadius={10} shadow="md">
@@ -107,7 +107,7 @@ const ComplaintsPage = () => {
         </Tbody>
       </Table>
     </Box>
-  )
-}
+  );
+};
 
-export default ComplaintsPage
+export default ComplaintsPage;

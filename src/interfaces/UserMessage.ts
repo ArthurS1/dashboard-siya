@@ -1,4 +1,4 @@
-export default interface UserMessage {
+interface UserMessage {
   id: number,
   content: string,
   email: string,
@@ -8,3 +8,5 @@ export default interface UserMessage {
   isComplaint: number,
   file: string,
 }
+
+export default UserMessage;

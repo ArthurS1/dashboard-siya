@@ -2,17 +2,17 @@
  * Mobile API abstraction.
  */
 
-import axios from "axios"
+import axios from 'axios';
 
-import Configuration from "../interfaces/Configuration"
+import Configuration from '../interfaces/Configuration';
 
 export default class MobileApi {
-  private _conf: Configuration
-  private _baseUrl: string
+  private _conf: Configuration;
+  private _baseUrl: string;
 
   constructor(conf: Configuration) {
-    this._conf = conf
-    this._baseUrl = this._conf.baseUrlFor("REACT_APP_MOBILE_API").toString()
+    this._conf = conf;
+    this._baseUrl = this._conf.baseUrlFor('REACT_APP_MOBILE_API').toString();
   }
 
   async getAllSignals() {
@@ -20,7 +20,7 @@ export default class MobileApi {
       axios.get(
         `${this._baseUrl}/events/getAll`
       )
-    )
+    );
   }
 
   async updateUserAmbassadorLevel(id: string, newLevel: number) {
@@ -29,17 +29,18 @@ export default class MobileApi {
         `${this._baseUrl}/users/update/${id}`,
         {
           data: {
+            // eslint-disable-next-line camelcase
             amb_level: newLevel
           }
         }
       )
-    )
+    );
   }
 
   async deleteUser(id: string) {
     return this.formatError(
       axios.delete(`${this._baseUrl}/users/${id}`)
-    )
+    );
   }
 
   async getAllUsers() {
@@ -47,7 +48,7 @@ export default class MobileApi {
       axios.get(
         `${this._baseUrl}/users/getAll`
       )
-    )
+    );
   }
 
   private async formatError<T>(p: Promise<T>): Promise<T> {
@@ -61,11 +62,11 @@ export default class MobileApi {
           isClosable: true,
         })
       )
-      )
+      );
   }
 
 }
 
 export function useMobileApi(conf: Configuration) {
-  return new MobileApi(conf)
+  return new MobileApi(conf);
 }

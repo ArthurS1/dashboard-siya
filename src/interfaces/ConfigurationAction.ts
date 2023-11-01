@@ -1,3 +1,5 @@
-export default interface ConfigurationAction {
+interface ConfigurationAction {
   type: string
 }
+
+export default ConfigurationAction;

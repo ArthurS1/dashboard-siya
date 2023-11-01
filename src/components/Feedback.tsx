@@ -6,38 +6,38 @@ import {
   Tooltip,
   IconButton,
   useToast,
-} from "@chakra-ui/react"
+} from '@chakra-ui/react';
 import {
   CheckIcon
-} from "@chakra-ui/icons"
+} from '@chakra-ui/icons';
 import {
   useState
-} from "react"
+} from 'react';
 
-import Rating from "../components/Rating"
-import UserMessage from "../interfaces/UserMessage"
+import Rating from '../components/Rating';
+import UserMessage from '../interfaces/UserMessage';
 import {
   useWebApi,
-} from "../common/WebApi"
+} from '../common/WebApi';
 import {
   useConfiguration
-} from "../contexts/Configuration"
+} from '../contexts/Configuration';
 import {
   useCredentials
-} from "../contexts/Credentials"
+} from '../contexts/Credentials';
 
 const Feedback = ({message}: {message: UserMessage}) => {
-  const toast = useToast()
+  const toast = useToast();
 
-  const creds = useCredentials()
-  const conf = useConfiguration()
-  const webApi = useWebApi(conf, creds)
+  const creds = useCredentials();
+  const conf = useConfiguration();
+  const webApi = useWebApi(conf, creds);
 
-  const [importance, setImportance] = useState(message.importance ?? 0)
+  const [importance, setImportance] = useState(message.importance ?? 0);
   const updateImportance = (id: number, importance: number) => {
     webApi.setFeedbackImportance(id, importance)
-      .catch((err) => toast(err))
-  }
+      .catch((err) => toast(err));
+  };
 
   return (
     <Tr>
@@ -68,7 +68,7 @@ const Feedback = ({message}: {message: UserMessage}) => {
         </Flex>
       </Td>
     </Tr>
-  )
-}
+  );
+};
 
-export default Feedback
+export default Feedback;

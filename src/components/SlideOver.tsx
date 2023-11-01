@@ -5,10 +5,12 @@ import {
   Text,
   Badge,
   Flex,
-} from "@chakra-ui/react"
-import { Signal } from '../routes/SignalsPage'; //TODO : wtf why from signalspage
+} from '@chakra-ui/react';
 
-const SlideOver = ({ signal, setShow }: { signal: Signal, setShow: any }) => {
+//TODO : wtf why from signalspage
+import { Signal } from '../routes/SignalsPage';
+
+const SlideOver = ({ signal, setShow }: { signal: Signal, setShow: any }) => { // eslint-disable-line
 
   return (
     <Flex
@@ -42,6 +44,6 @@ const SlideOver = ({ signal, setShow }: { signal: Signal, setShow: any }) => {
       </Box>
     </Flex>
   );
-}
+};
 
 export default SlideOver;

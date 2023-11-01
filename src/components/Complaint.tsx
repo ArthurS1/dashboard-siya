@@ -6,47 +6,51 @@ import {
   Tooltip,
   IconButton,
   useToast,
-} from "@chakra-ui/react"
+} from '@chakra-ui/react';
 import {
   CheckIcon,
   EmailIcon,
   DownloadIcon,
-} from "@chakra-ui/icons"
+} from '@chakra-ui/icons';
 import {
   useState
-} from "react"
+} from 'react';
 
-import UserMessage from "../interfaces/UserMessage"
+import UserMessage from '../interfaces/UserMessage';
 import {
   useWebApi,
-} from "../common/WebApi"
+} from '../common/WebApi';
 import {
   useCredentials
-} from "../contexts/Credentials"
+} from '../contexts/Credentials';
 import {
   useConfiguration
-} from "../contexts/Configuration"
+} from '../contexts/Configuration';
 
 const Complaint = ({ message }: { message: UserMessage }) => {
-  const toast = useToast()
+  const toast = useToast();
 
-  const creds = useCredentials()
-  const conf = useConfiguration()
-  const webApi = useWebApi(conf, creds)
+  const creds = useCredentials();
+  const conf = useConfiguration();
+  const webApi = useWebApi(conf, creds);
 
-  const [importance, setImportance] = useState(message.importance ?? 0)
+  const [importance, setImportance] = useState(message.importance ?? 0);
   const updateImportance = (id: number, importance: number) => {
     webApi.setFeedbackImportance(id, importance)
-      .catch((err) => toast(err))
-  }
+      .catch((err) => toast(err));
+  };
   const mailTo = (email: string) => {
-    window.location.href = `mailto:${email}`
-  }
+    window.location.href = `mailto:${email}`;
+  };
   const getAttachment = (id: number) => {
     window.open(
-      `${conf.baseUrlFor("SHOWCASE_API")}feedback/getImgById?email=${creds.data?.email}&password=${creds.data?.password}&id=${id}`,
+      `${conf.baseUrlFor('SHOWCASE_API')}feedback/`
+      +
+      `getImgById?email=${creds.data?.email}&`
+      +
+      `password=${creds.data?.password}&id=${id}`,
     '_blank');
-  }
+  };
 
   return (
     <Tr>
@@ -99,7 +103,7 @@ const Complaint = ({ message }: { message: UserMessage }) => {
         </Flex>
       </Td>
     </Tr>
-  )
-}
+  );
+};
 
-export default Complaint
+export default Complaint;

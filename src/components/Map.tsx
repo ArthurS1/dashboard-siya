@@ -28,21 +28,21 @@ const defaults = {
     zIndex: 0
   },
   marker: new Icon({
-    iconUrl: "marker.png",
+    iconUrl: 'marker.png',
     iconSize: [48, 48],
     iconAnchor: [24, 48],
     popupAnchor: [0, -48],
-    shadowUrl: "marker-shadow.png",
+    shadowUrl: 'marker-shadow.png',
     shadowSize: [48, 48],
     shadowAnchor: [24, 48]
   }),
-}
+};
 
 const Map = ({ onRefresh, onMarkerClick}: {
   onRefresh: () => Promise<MapEntity[]>,
   onMarkerClick: (s: MapEntity) => void,
 }) => {
-  const [signals, setSignals] = useState<MapEntity[]>([])
+  const [signals, setSignals] = useState<MapEntity[]>([]);
   const onRefreshWrapper = () => onRefresh().then((e) => setSignals(e));
   const leafletSignals =
     signals.map((signal) =>
@@ -51,10 +51,10 @@ const Map = ({ onRefresh, onMarkerClick}: {
         position={new LatLng(signal.latitude, signal.longitude)}
         icon={defaults.marker}
         eventHandlers={{
-          click: (_) => onMarkerClick(signal)
+          click: (_) => onMarkerClick(signal) // eslint-disable-line
         }}
       />
-    )
+    );
 
   return (
     <Box h="100%">
@@ -81,7 +81,7 @@ const Map = ({ onRefresh, onMarkerClick}: {
         {leafletSignals}
       </MapContainer>
     </Box>
-  )
-}
+  );
+};
 
 export default Map;

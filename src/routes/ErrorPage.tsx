@@ -2,10 +2,10 @@ import {
   Button,
   Flex,
   Text,
-} from "@chakra-ui/react"
+} from '@chakra-ui/react';
 import {
   Link
-} from "react-router-dom"
+} from 'react-router-dom';
 
 const ErrorPage = () => {
   return (
@@ -24,7 +24,7 @@ const ErrorPage = () => {
         </Button>
       </Link>
     </Flex>
-  )
-}
+  );
+};
 
 export default ErrorPage;

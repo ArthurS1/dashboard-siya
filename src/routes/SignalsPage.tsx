@@ -12,7 +12,7 @@ import {
 
 import {
   useConfiguration
-} from "../contexts/Configuration"
+} from '../contexts/Configuration';
 import { useMobileApi } from 'common/MobileApi';
 
 export interface Signal {
@@ -27,14 +27,14 @@ export interface Signal {
 
 
 const SignalsPage = () => {
-  const conf = useConfiguration()
-  const mobileApi = useMobileApi(conf)
+  const conf = useConfiguration();
+  const mobileApi = useMobileApi(conf);
 
   const [signalInfos, setSignalInfos] = useState<Signal>({
     _id: '',
     signaler: '',
-    created_at: '',
-    last_updated_at: '',
+    created_at: '', // eslint-disable-line
+    last_updated_at: '', // eslint-disable-line
     verified: false,
     lat: 0,
     lng: 0,
@@ -48,8 +48,8 @@ const SignalsPage = () => {
         const latitude = e.lat;
         const longitude = e.lng;
 
-        return { id: e._id, latitude, longitude }
-      })
+        return { id: e._id, latitude, longitude };
+      });
 
     return mapEntities;
   }
@@ -60,7 +60,7 @@ const SignalsPage = () => {
     const signal = unformattedSignals.find((e) => e._id = id);
 
     if (signal === undefined)
-      throw new Error(`could not find signal with id ${id}`)
+      throw new Error(`could not find signal with id ${id}`);
     return signal;
   }
 
@@ -75,7 +75,7 @@ const SignalsPage = () => {
         <SlideOver signal={signalInfos} setShow={onToggle} />
       </Slide>
     </Box>
-  )
+  );
 };
 
 export default SignalsPage;

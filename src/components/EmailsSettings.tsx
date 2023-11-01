@@ -10,47 +10,48 @@ import {
   Switch,
   Text,
   useToast,
-} from "@chakra-ui/react"
+} from '@chakra-ui/react';
 import {
   DownloadIcon,
-} from "@chakra-ui/icons"
+} from '@chakra-ui/icons';
 import {
   useFilePicker
-} from "use-file-picker"
+} from 'use-file-picker';
 
-import EmailsSettingsData from "../interfaces/EmailsSettingsData"
+import EmailsSettingsData from '../interfaces/EmailsSettingsData';
 
 const EmailsSettings = ({ state, setState }: {
   state: EmailsSettingsData,
-  setState: any,
+  setState: any, // eslint-disable-line
 }) => {
 
-  const toast = useToast()
+  const toast = useToast();
   const [openFileSelector] = useFilePicker({
-    accept: ".csv",
+    accept: '.csv',
     multiple: false,
     onFilesSuccessfulySelected:
       (files) => getEmailsFromCsvFile(files.filesContent[0].content)
-  })
+  });
 
   const getEmailsFromCsvFile = (s: string) => {
-    const emails = s.slice(0, -1).split(',')
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    const hasErrors = emails.map((e) => re.test(e)).includes(false)
+    const emails = s.slice(0, -1).split(',');
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
+    const hasErrors = emails.map((e) => re.test(e)).includes(false);
 
-    console.log(emails)
-    console.log(emails.map((e) => re.test(e)))
+    console.log(emails);
+    console.log(emails.map((e) => re.test(e)));
     if (hasErrors) {
       toast({
         title: 'Erreur',
-        description: 'Un ou plusieurs mails du fichier sont invalides. Verifiez que votre fichier est terminé par NULL.',
+        description: 'Un ou plusieurs mails du fichier sont invalides.'
+          + 'Verifiez que votre fichier est terminé par NULL.',
         status: 'error',
         duration: 9000,
         isClosable: true,
-      })
+      });
     } else
-      state.csv = emails
-  }
+      state.csv = emails;
+  };
 
   return (
     <Modal
@@ -68,7 +69,8 @@ const EmailsSettings = ({ state, setState }: {
             <Switch
               colorScheme="pink"
               size="lg"
-              onChange={(_) => setState({ ...state, sendToAllUsers: !state.sendToAllUsers })}
+              onChange={(_) => // eslint-disable-line
+                setState({ ...state, sendToAllUsers: !state.sendToAllUsers })}
               defaultChecked={true}
             />
           </Flex>
@@ -80,15 +82,23 @@ const EmailsSettings = ({ state, setState }: {
           >Télécharger un fichier</Button>
           <Box hidden={state.sendToAllUsers || state.csv?.length === 0}>
             <Text><b>Le mail sera envoyé à:</b></Text>
-            <Box mb={5} borderColor={"gray.200"} borderRadius="md" borderWidth="0.2rem" p={2}>
+            <Box
+              mb={5}
+              borderColor={'gray.200'}
+              borderRadius="md"
+              borderWidth="0.2rem"
+              p={2}>
               {state.csv?.map((e) => <Text key={e}>{e}</Text>)}
             </Box>
           </Box>
-          <Text fontSize="xs">Envoyez un fichier CSV contenant une colonne étant la liste des emails à envoyer</Text>
+          <Text fontSize="xs">
+            {'Envoyez un fichier CSV contenant une'
+             + ' colonne étant la liste des emails à envoyer'}
+          </Text>
         </Box>
       </ModalContent>
     </Modal>
-  )
-}
+  );
+};
 
-export default EmailsSettings
+export default EmailsSettings;

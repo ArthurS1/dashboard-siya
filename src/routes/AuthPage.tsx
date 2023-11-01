@@ -1,11 +1,11 @@
 import {
   useNavigate
-} from "react-router-dom"
+} from 'react-router-dom';
 import {
   useContext,
   useState,
   useEffect,
-} from "react"
+} from 'react';
 import {
   Button,
   Input,
@@ -13,59 +13,59 @@ import {
   useToast,
   Text,
   Flex,
-} from "@chakra-ui/react"
-import Cookies from "js-cookie"
+} from '@chakra-ui/react';
+import Cookies from 'js-cookie';
 
 import {
   CredentialsDispatchContext, useCredentials
-} from "../contexts/Credentials"
-import { useWebApi } from "../common/WebApi"
-import { useConfiguration } from "contexts/Configuration"
+} from '../contexts/Credentials';
+import { useWebApi } from '../common/WebApi';
+import { useConfiguration } from 'contexts/Configuration';
 
 const AuthPage = () => {
-  const toast = useToast()
-  const navigate = useNavigate()
+  const toast = useToast();
+  const navigate = useNavigate();
 
-  const dispatch = useContext(CredentialsDispatchContext)
-  const creds = useCredentials()
-  const conf = useConfiguration()
+  const dispatch = useContext(CredentialsDispatchContext);
+  const creds = useCredentials();
+  const conf = useConfiguration();
 
-  const webApi = useWebApi(conf, creds)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
+  const webApi = useWebApi(conf, creds);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const email = Cookies.get("email")
-    const password = Cookies.get("password")
+    const email = Cookies.get('email');
+    const password = Cookies.get('password');
 
     if (email && password) {
-      navigate("/graphs")
+      navigate('/graphs');
     }
-  }, [navigate])
+  }, [navigate]);
 
   const onLogginAttempt = () => {
-    setLoading(true)
+    setLoading(true);
     webApi.login(email, password)
       .then(() => {
         dispatch({
-          type: "modified",
+          type: 'modified',
           data: {
             email,
             password,
           }
-        })
-        Cookies.set("email", email, { expires: 1 })
-        Cookies.set("password", password, { expires: 1 })
-        navigate("/graphs")
-        setLoading(false)
+        });
+        Cookies.set('email', email, { expires: 1 });
+        Cookies.set('password', password, { expires: 1 });
+        navigate('/graphs');
+        setLoading(false);
       })
       .catch((err) => {
-        console.debug(err)
-        toast(err)
-        setLoading(false)
-      })
-  }
+        console.debug(err);
+        toast(err);
+        setLoading(false);
+      });
+  };
 
   return (
     <Flex
@@ -98,7 +98,7 @@ const AuthPage = () => {
         >Connexion</Button>
       </Box>
     </Flex>
-  )
-}
+  );
+};
 
-export default AuthPage
+export default AuthPage;

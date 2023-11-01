@@ -11,7 +11,7 @@ enum Order {
 
 class ToggleableArray<T> extends Array<T> {
 
-  private _state: Order = Order.NoSort
+  private _state: Order = Order.NoSort;
 
   sortToggle(
     { fromHighToLow: f1, fromHighToLow: f2 }:
@@ -22,23 +22,23 @@ class ToggleableArray<T> extends Array<T> {
   ) {
     switch (this._state) {
       case Order.LowToHigh:
-        super.sort(f1)
-        this._state = Order.HighToLow
-        break
+        super.sort(f1);
+        this._state = Order.HighToLow;
+        break;
       case Order.HighToLow:
-        super.sort(f2)
-        this._state = Order.LowToHigh
-        break
+        super.sort(f2);
+        this._state = Order.LowToHigh;
+        break;
       default:
-        this._state = Order.HighToLow
+        this._state = Order.HighToLow;
     }
   }
 
   get order() {
-    return this._state
+    return this._state;
   }
 
 }
 
-export default ToggleableArray
-export { Order }
+export default ToggleableArray;
+export { Order };

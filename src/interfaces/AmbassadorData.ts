@@ -6,4 +6,4 @@ interface AmbassadorData {
   _id: string,
 }
 
-export default AmbassadorData
+export default AmbassadorData;

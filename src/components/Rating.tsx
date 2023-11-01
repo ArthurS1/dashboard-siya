@@ -1,9 +1,9 @@
 import {
   StarIcon
-} from "@chakra-ui/icons"
+} from '@chakra-ui/icons';
 
 const Rating = ({value}: {value: number}) => {
-  const stars = value > 6 ? 5 : value
+  const stars = value > 6 ? 5 : value;
 
   return (
     <>
@@ -11,7 +11,7 @@ const Rating = ({value}: {value: number}) => {
         <StarIcon key={i} m="1px" boxSize={3} />)
       ) }
     </>
-  )
-}
+  );
+};
 
-export default Rating
+export default Rating;

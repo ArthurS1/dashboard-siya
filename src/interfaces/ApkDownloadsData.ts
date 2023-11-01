@@ -1,4 +1,6 @@
-export default interface ApkDownloadsData {
+interface ApkDownloadsData {
   date: string,
   nbr: number,
 }
+
+export default ApkDownloadsData;

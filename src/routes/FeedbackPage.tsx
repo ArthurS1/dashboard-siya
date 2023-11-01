@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -9,21 +9,21 @@ import {
   Thead,
   Tr,
   useToast,
-} from "@chakra-ui/react"
+} from '@chakra-ui/react';
 import {
   ArrowUpIcon,
   ArrowDownIcon,
-} from "@chakra-ui/icons"
+} from '@chakra-ui/icons';
 
-import UserMessage from "interfaces/UserMessage"
-import Feedback from "../components/Feedback"
+import UserMessage from 'interfaces/UserMessage';
+import Feedback from '../components/Feedback';
 import {
   useCredentials
-} from "../contexts/Credentials"
+} from '../contexts/Credentials';
 import {
   useWebApi
-} from "../common/WebApi"
-import { useConfiguration } from "contexts/Configuration"
+} from '../common/WebApi';
+import { useConfiguration } from 'contexts/Configuration';
 
 enum SortingMode {
   LowToHigh,
@@ -32,45 +32,45 @@ enum SortingMode {
 }
 
 const FeedbackPage = () => {
-  const toast = useToast()
+  const toast = useToast();
 
-  const creds = useCredentials()
-  const conf = useConfiguration()
-  const webApi = useWebApi(conf, creds)
+  const creds = useCredentials();
+  const conf = useConfiguration();
+  const webApi = useWebApi(conf, creds);
 
-  const [table, setTable] = useState<UserMessage[] | undefined>(undefined)
-  const [gradeMode, setGradeMode] = useState(SortingMode.NoSort)
-  const [dateMode, setDateMode] = useState(SortingMode.NoSort)
-  const [reloading, setReloading] = useState(false)
+  const [table, setTable] = useState<UserMessage[] | undefined>(undefined);
+  const [gradeMode, setGradeMode] = useState(SortingMode.NoSort);
+  const [dateMode, setDateMode] = useState(SortingMode.NoSort);
+  const [reloading, setReloading] = useState(false);
 
   const sortTable = (
     mode: SortingMode,
     setMode: (a: SortingMode) => void,
-    sortHighToLow: (a: any, b: any) => number,
-    sortLowToHigh: (a: any, b: any) => number
+    sortHighToLow: (a: any, b: any) => number, // eslint-disable-line
+    sortLowToHigh: (a: any, b: any) => number // eslint-disable-line
   ) => {
     switch (mode) {
       case SortingMode.LowToHigh:
-        table?.sort(sortHighToLow)
-        setMode(SortingMode.HighToLow)
+        table?.sort(sortHighToLow);
+        setMode(SortingMode.HighToLow);
         break;
       case SortingMode.HighToLow:
-        table?.sort(sortLowToHigh)
-        setMode(SortingMode.LowToHigh)
+        table?.sort(sortLowToHigh);
+        setMode(SortingMode.LowToHigh);
         break;
       default:
-        setMode(SortingMode.HighToLow)
+        setMode(SortingMode.HighToLow);
     }
-  }
+  };
   const reload = () => {
-    setReloading(true)
+    setReloading(true);
     webApi.getAllFeedbacks()
     .then((res) => {
-        setTable(res.data.filter((e: UserMessage) => e.isComplaint === 0))
-        setReloading(false)
+        setTable(res.data.filter((e: UserMessage) => e.isComplaint === 0));
+        setReloading(false);
       })
-    .catch((err) => toast(err))
-  }
+    .catch((err) => toast(err));
+  };
 
   return (
     <Box m={10} p={5} bg="white" borderRadius={10} shadow="md">
@@ -116,7 +116,7 @@ const FeedbackPage = () => {
         </Tbody>
       </Table>
     </Box>
-  )
-}
+  );
+};
 
-export default FeedbackPage
+export default FeedbackPage;

@@ -9,29 +9,29 @@ import {
   Select,
   Tooltip,
   IconButton,
-} from "@chakra-ui/react"
+} from '@chakra-ui/react';
 import {
   CheckIcon,
-} from "@chakra-ui/icons"
+} from '@chakra-ui/icons';
 import {
   useState
-} from "react"
+} from 'react';
 
-import AmbassadorData from "../interfaces/AmbassadorData"
+import AmbassadorData from '../interfaces/AmbassadorData';
 import {
   useConfiguration
-} from "../contexts/Configuration"
-import { useMobileApi } from "common/MobileApi"
+} from '../contexts/Configuration';
+import { useMobileApi } from 'common/MobileApi';
 
 const Ambassador = ({ for: user }: { for: AmbassadorData }) => {
-  const conf = useConfiguration()
-  const mobileApi = useMobileApi(conf)
+  const conf = useConfiguration();
+  const mobileApi = useMobileApi(conf);
 
-  const [level, setLevel] = useState(user.amb_level)
+  const [level, setLevel] = useState(user.amb_level);
 
   function updateLevel(id: string, level: number) {
     mobileApi.updateUserAmbassadorLevel(id, level)
-      .then(() => setLevel(level))
+      .then(() => setLevel(level));
   }
 
   return (
@@ -64,7 +64,7 @@ const Ambassador = ({ for: user }: { for: AmbassadorData }) => {
         {user.amb_unique_code}
       </Td>
     </Tr>
-  )
-}
+  );
+};
 
-export default Ambassador
+export default Ambassador;
