@@ -1,13 +1,11 @@
-import {
-  FeedbackPage,
-  ChartsPage,
-  SearchPage,
-  EmailsPage,
-  ComplaintsPage,
-  SignalsPage,
-  UsersPage,
-  ReferralsPage,
-} from './PagesIndex';
+import FeedbackPage from './FeedbackPage';
+import ChartsPage from './ChartsPage';
+import SearchPage from './SearchPage';
+import EmailsPage from './EmailsPage';
+import ComplaintsPage from './ComplaintsPage';
+import SignalsPage from './SignalsPage';
+import UsersPage from './UsersPage';
+import ReferralsPage from './ReferralsPage';
 
 export interface Page {
   title: string
