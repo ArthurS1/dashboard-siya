@@ -12,7 +12,10 @@ export default class MobileApi {
 
   constructor(conf: Configuration) {
     this._conf = conf;
-    this._baseUrl = this._conf.baseUrlFor('REACT_APP_MOBILE_API').toString();
+    this._baseUrl = this._conf
+      .baseUrlFor('REACT_APP_MOBILE_API')
+      .toString()
+      .slice(0, -1);
   }
 
   async getAllSignals() {
@@ -40,6 +43,14 @@ export default class MobileApi {
   async deleteUser(id: string) {
     return this.formatError(
       axios.delete(`${this._baseUrl}/users/${id}`)
+    );
+  }
+
+  async getUser(id: string) {
+    return this.formatError(
+      axios.get(
+        `${this._baseUrl}/users/fetch/${id}`
+      )
     );
   }
 

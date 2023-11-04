@@ -26,16 +26,17 @@ import {
 import {
   useMobileApi
 } from '../common/MobileApi';
+import { useNavigate } from 'react-router-dom';
 
 const User = (
   { for: user, onRemove: f}:
   { for: UserData, onRemove: (id: string) => void }
   ) => {
-
+  const navigate = useNavigate();
   const conf = useConfiguration();
   const mobileApi = useMobileApi(conf);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen: onDeleteButtonPressed, onClose } = useDisclosure();
   const [emailVerification, setEmailVerification] = useState('');
 
   const deleteUser = () => {
@@ -47,7 +48,11 @@ const User = (
       .catch((err) => console.log(err));
   };
 
-  return (
+  const onProfileButtonPressed = (id: string) => {
+    navigate(`/user/${id}`);
+  };
+
+ return (
     <>
       <Tr>
         <Td>
@@ -58,10 +63,12 @@ const User = (
         </Td>
         <Td>
           <ButtonGroup>
-            <Button colorScheme="gray" disabled={true}>
-              Voir le profil
+            <Button
+              colorScheme="gray"
+              onClick={() => onProfileButtonPressed(user._id)}>
+              Profil
             </Button>
-            <Button colorScheme="red" onClick={onOpen}>
+            <Button colorScheme="red" onClick={onDeleteButtonPressed}>
               Supprimer
             </Button>
           </ButtonGroup>

@@ -1,3 +1,8 @@
+/*
+ * This page lists - and acts on - the subscribers (people that have
+ * subscribed to the newsletter).
+ */
+
 import {
   Button,
   ButtonGroup,
@@ -20,14 +25,14 @@ import UserData from '../interfaces/User';
 import {
   useConfiguration
 } from '../contexts/Configuration';
-import User from '../components/User';
+import User from '../components/Subscriber';
 import {
   default as ToggleableArray,
   Order
 } from '../common/ToggleableArray';
 import { useMobileApi } from 'common/MobileApi';
 
-const UsersPage = () => {
+const SubscribersPage = () => {
   const conf = useConfiguration();
   const mobileApi = useMobileApi(conf);
 
@@ -93,4 +98,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default SubscribersPage;

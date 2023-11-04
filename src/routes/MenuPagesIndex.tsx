@@ -4,8 +4,8 @@ import SearchPage from './SearchPage';
 import EmailsPage from './EmailsPage';
 import ComplaintsPage from './ComplaintsPage';
 import SignalsPage from './SignalsPage';
-import UsersPage from './UsersPage';
 import ReferralsPage from './ReferralsPage';
+import UsersPage from './UsersPage';
 
 export interface Page {
   title: string

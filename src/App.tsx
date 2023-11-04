@@ -19,6 +19,7 @@ import {
   Root,
   ErrorPage,
   AuthPage,
+  UserPage,
 } from './routes/PagesIndex';
 import {
   pagesMenuIndex
@@ -40,6 +41,11 @@ const App = () => {
     {
       path: '/auth',
       element: <AuthPage />
+    },
+    {
+      path: '/user/:userId',
+      element: <UserPage />,
+      loader: ({params}) => params.userId ?? 'failure'
     }
   ]);
 

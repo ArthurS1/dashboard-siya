@@ -11,8 +11,9 @@ import ChartsPage from '../routes/ChartsPage';
 import SearchPage from '../routes/SearchPage';
 import EmailsPage from '../routes/EmailsPage';
 import SignalsPage from '../routes/SignalsPage';
-import UsersPage from '../routes/UsersPage';
 import ReferralsPage from '../routes/ReferralsPage';
+import UsersPage from '../routes/UsersPage';
+import UserPage from '../routes/UserPage';
 
 export {
   Root,
@@ -24,6 +25,7 @@ export {
   SearchPage,
   EmailsPage,
   SignalsPage,
-  UsersPage,
   ReferralsPage,
+  UsersPage,
+  UserPage,
 };

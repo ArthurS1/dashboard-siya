@@ -15,8 +15,6 @@ export default class Environment implements Configuration {
   baseUrlFor(service: string) {
     const a = process.env[service];
 
-    console.debug(process.env); //TODO: remove
-
     if (a === undefined)
       throw new Error(`Failed to find environment variable ${service}`);
     else
