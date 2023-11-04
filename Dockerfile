@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # install project dependencies
-RUN yarn install
+RUN npm i --production
 
 # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
@@ -15,4 +15,4 @@ COPY . .
 # build app for production with minification
 
 # RUN [ "yarn", "run", "build" ]
-CMD [ "yarn", "run", "start" ]
+CMD [ "npm", "run", "start" ]
