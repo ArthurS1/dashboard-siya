@@ -1,6 +1,5 @@
 import FeedbackPage from './FeedbackPage';
 import ChartsPage from './ChartsPage';
-import SearchPage from './SearchPage';
 import EmailsPage from './EmailsPage';
 import ComplaintsPage from './ComplaintsPage';
 import SignalsPage from './SignalsPage';
@@ -28,11 +27,6 @@ export const pagesMenuIndex: Page[] = [
     title: 'Plaintes',
     path: '/complaints',
     element: <ComplaintsPage />
-  },
-  {
-    title: 'Recherche',
-    path: '/search',
-    element: <SearchPage />
   },
   {
     title: 'Newsletter',
