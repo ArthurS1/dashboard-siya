@@ -15,7 +15,9 @@ import {
   useEffect,
 } from 'react';
 import Cookies from 'js-cookie';
+
 import { pagesMenuIndex } from './MenuPagesIndex';
+import OmniSearch from '../components/OmniSearch';
 
 const Root = () => {
   const navigate = useNavigate();
@@ -55,6 +57,7 @@ const Root = () => {
           })}
         </ButtonGroup>
         <Spacer />
+        <OmniSearch />
         <ButtonGroup colorScheme="linkedin">
           <Button variant="outline" onClick={logout}>
             Déconnexion
