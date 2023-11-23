@@ -27,3 +27,6 @@ yarn-error.log*
 
 # typesense data
 typesense-data
+
+# built seed script
+seed.js
