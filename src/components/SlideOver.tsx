@@ -40,7 +40,9 @@ const SlideOver = ({ signal, setShow }: { signal: Signal, setShow: any }) => { /
         </Box>
       </Box>
       <Box p={5}>
-        <Button disabled={true} colorScheme="pink">Profil Utilisateur</Button>
+        <Button disabled={true} colorScheme="linkedin">
+          Profil Utilisateur
+        </Button>
       </Box>
     </Flex>
   );

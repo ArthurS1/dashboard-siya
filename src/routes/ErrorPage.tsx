@@ -19,7 +19,7 @@ const ErrorPage = () => {
         Page introuvable
       </Text>
       <Link to="/">
-        <Button colorScheme="pink" m={3}>
+        <Button colorScheme="linkedin" m={3}>
           Revenir à la page principale
         </Button>
       </Link>

@@ -67,7 +67,7 @@ const EmailsSettings = ({ state, setState }: {
           <Flex alignItems="center">
             <Text mr={2}>Envoyer à tous les utilisateurs</Text>
             <Switch
-              colorScheme="pink"
+              colorScheme="linkedin"
               size="lg"
               onChange={(_) => // eslint-disable-line
                 setState({ ...state, sendToAllUsers: !state.sendToAllUsers })}
