@@ -42,7 +42,7 @@ const UserPage = () => {
     <Box m={10} p={5} bg="white" borderRadius={10} shadow="md">
       <Button
         mx={2}
-        colorScheme="pink"
+        colorScheme="linkedin"
         variant="ghost"
         onClick={() => navigate('/users')}>
         Retour

@@ -41,8 +41,8 @@ const Root = () => {
   return (
     <Flex direction="column" bg="gray.50" h="100vh">
       <Flex bg="white" p={2} shadow="lg">
-        <Image mx={2} h={10} src="/logo.svg" />
-        <ButtonGroup colorScheme="pink">
+        <Image mx={2} h={10} src="/logo.png" />
+        <ButtonGroup colorScheme="linkedin">
           {pagesMenuIndex.map(e => {
             return (
               <Link key={e.path} to={e.path}>
@@ -55,7 +55,7 @@ const Root = () => {
           })}
         </ButtonGroup>
         <Spacer />
-        <ButtonGroup colorScheme="pink">
+        <ButtonGroup colorScheme="linkedin">
           <Button variant="outline" onClick={logout}>
             Déconnexion
           </Button>

@@ -92,7 +92,7 @@ const AuthPage = () => {
         <Button
           m={1}
           isLoading={loading}
-          colorScheme='pink'
+          colorScheme='linkedin'
           w="100%"
           onClick={onLogginAttempt}
         >Connexion</Button>

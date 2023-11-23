@@ -64,7 +64,7 @@ const Map = ({ onRefresh, onMarkerClick}: {
         margin={2}
         right={0}
         onClick={() => onRefreshWrapper()}
-        colorScheme="pink"
+        colorScheme="linkedin"
       >Rafraichir</Button>
       <MapContainer
         center={defaults.position}
