@@ -12,17 +12,18 @@
     "@types/react-dom": "^18.0.4",
     "axios": "^1.2.2",
     "dotenv": "^16.3.1",
-    "instantsearch.js": "^4.60.0",
     "js-cookie": "^3.0.1",
     "leaflet": "^1.9.4",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-icons": "^3.0.0",
+    "react-instantsearch": "^7.3.0",
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.8.1",
     "react-scripts": "^5.0.1",
     "recharts": "^2.3.2",
     "typescript": "^4.6.3",
+    "typesense": "^1.7.2",
     "typesense-instantsearch-adapter": "^2.7.1",
     "use-file-picker": "^1.6.1",
     "web-vitals": "^2.1.4"
@@ -30,7 +31,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "seed": "tsc seed.ts && node seed.js"
   },
   "eslintConfig": {
     "extends": "react-app"
