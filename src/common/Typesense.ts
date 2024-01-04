@@ -7,7 +7,7 @@ function buildSearchClient(conf: Configuration) {
     server: {
       nodes: [
         {
-          host: 'localhost',
+          host: conf.baseUrlFor('REACT_APP_SHOWCASE_API').toString(),
           port: 8108,
           protocol: 'http',
         }
