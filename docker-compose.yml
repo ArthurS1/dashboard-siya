@@ -16,8 +16,8 @@ services:
         image: ${TYPESENSE_IMAGE_NAME}:${TYPESENSE_IMAGE_TAG}
         restart: ${TYPESENSE_RESTART_POLICY}
         command: '--data-dir /data --api-key=xyz --enable-cors'
-        ports:
-            - "${TYPESENSE_HOST_PORT}:${TYPESENSE_CONTAINER_PORT}"
+        # ports:
+        #     - "${TYPESENSE_HOST_PORT}:${TYPESENSE_CONTAINER_PORT}"
         volumes:
             - ./${TYPESENSE_VOLUME_NAME}:/data
         networks:
@@ -27,6 +27,43 @@ services:
             options:
                 gelf-address: "udp://localhost:50000"
                 tag: ${DASHBOARD_CONTAINER_NAME}
+        labels:
+            # General traefik settings
+            - "traefik.enable=true" # <== Enabling traefik to manage this container
+            - "traefik.docker.network=${TRAEFIK_NETWORK_NAME}" # <== The network traefik will operate on the docker network named traefik-net
+            # HTTP to HTTPS settings
+            - "traefik.http.routers.typesense-secure.entrypoints=websecure" # <== The entrypoint HTTPS
+            - "traefik.http.routers.typesense-secure.rule=Host(`${TYPESENSE_SUBDOMAIN}.${DOMAIN_NAME}`)" # <== The rule to match the request
+            # Let's Encrypt settings
+            - "traefik.http.routers.typesense-secure.tls=true" # Enable TLS
+            - "traefik.http.routers.typesense-secure.tls.certresolver=lets-encrypt" # <== The certificate resolver to use
+            # Traefik compress settings
+            - "traefik.http.middlewares.typesense-compress.compress=true" # <== Enable compression
+            # Traefik header settings
+            ## SSL settings
+            - "traefik.http.middlewares.typesense-header.headers.sslRedirect=true" # <== Enabling SSL redirection
+            ## STS settings
+            - "traefik.http.middlewares.typesense-header.headers.stsSeconds=31536000" # <== Setting STS seconds
+            - "traefik.http.middlewares.typesense-header.headers.stsIncludeSubdomains=true" # <== Enabling STS include subdomain
+            - "traefik.http.middlewares.typesense-header.headers.stsPreload=true" # <== Enabling STS preload
+            - "traefik.http.middlewares.typesense-header.headers.forceSTSHeader=true" # <== Enabling force STS header
+            ## Security settings
+            - "traefik.http.middlewares.typesense-header.headers.framedeny=true" # <== Preventing clickjacking
+            - "traefik.http.middlewares.typesense-header.headers.browserxssfilter=true" # <== Preventing XSS
+            - "traefik.http.middlewares.typesense-header.headers.referrerPolicy=same-origin" # <== Preventing Referrer leakage
+            ## Cache settings
+            - "traefik.http.middlewares.typesense-header.plugin.httpCache.maxTtl=300" # <== Setting the max TTL time
+            - "traefik.http.middlewares.typesense-header.plugin.httpCache.maxAge=300" # <== Setting the max age time
+            - "traefik.http.middlewares.typesense-header.plugin.httpCache.maxStale=300" # <== Setting the max stale time
+            - "traefik.http.middlewares.typesense-header.plugin.httpCache.minFresh=300" # <== Setting the min fresh time
+            - "traefik.http.middlewares.typesense-header.plugin.httpCache.sharedMaxAge=300" # <== Setting the shared max age time
+            - "traefik.http.middlewares.typesense-header.plugin.httpCache.noCache=false" # <== Enabling cache
+            - "traefik.http.middlewares.typesense-header.plugin.httpCache.noStore=false" # <== Enabling store
+            - "traefik.http.middlewares.typesense-header.plugin.httpCache.noTransform=false" # <== Enabling transform
+            - "traefik.http.middlewares.typesense-header.plugin.httpCache.mustRevalidate=true" # <== Enabling revalidation
+            - "traefik.http.middlewares.typesense-header.plugin.httpCache.proxyRevalidate=true" # <== Enabling proxy revalidation
+            # Traefik loadbalancer settings
+            - "traefik.http.services.typesense-secure.loadbalancer.server.port=${TYPESENSE_PORT}" # <== The port to use
     dashboard-service:
         container_name: ${DASHBOARD_CONTAINER_NAME}
         image: ${DASHBOARD_IMAGE_NAME}:${DASHBOARD_IMAGE_TAG}
