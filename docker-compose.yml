@@ -21,6 +21,7 @@ services:
         volumes:
             - ./${TYPESENSE_VOLUME_NAME}:/data
         networks:
+            - ${TRAEFIK_NETWORK_NAME}
             - ${DASHBOARD_NETWORK_NAME}
         logging:
             driver: gelf
