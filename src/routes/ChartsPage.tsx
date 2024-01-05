@@ -79,19 +79,6 @@ const ChartsPage = () => {
       d1.getMonth === d2.getMonth
     );
   };
-  const apkDownloadsData: DataPerDay[] | undefined =
-    apkDownloaded
-      ?.map((a: ApkDownloadsData): DataPerDay => {
-        return {date: new Date(a.date), data: a.nbr};
-        } )
-      ?.reduce((acc: DataPerDay[], c: DataPerDay): DataPerDay[] => {
-        if (acc.length === 0)
-          return [c];
-        else {
-          const last = acc[acc.length];
-          return acc.concat({date: c.date, data: c.data + last.data});
-        }
-      }, []);
   const newsletterAccountsData: DataPerDay[] | undefined =
     newletterAccounts?.reduce(
       (
@@ -174,22 +161,6 @@ const ChartsPage = () => {
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} height={10} />
             <YAxis label='enregistrements' />
-            <XAxis label='jours' />
-            <Tooltip />
-            <Line type="monotone" dataKey="data" stroke="#8884d8" />
-          </LineChart>
-        </GridItem>
-        <GridItem>
-          <Heading fontSize='lg'>
-            Nombre cumulé de téléchargements de l'APK
-          </Heading>
-          <LineChart
-            width={500}
-            height={300}
-            data={apkDownloadsData}
-          >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} height={10} />
-            <YAxis label='apk telecharges' />
             <XAxis label='jours' />
             <Tooltip />
             <Line type="monotone" dataKey="data" stroke="#8884d8" />
