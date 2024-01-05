@@ -8,8 +8,8 @@ function buildSearchClient(conf: Configuration) {
       nodes: [
         {
           host: 'typesense.siya-eip.com',
-          port: 8108,
-          protocol: 'http',
+          port: 443,
+          protocol: 'https',
         }
       ],
       apiKey: 'xyz', // TODO : replace with env variable
