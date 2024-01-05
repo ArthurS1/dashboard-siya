@@ -7,7 +7,7 @@ function buildSearchClient(conf: Configuration) {
     server: {
       nodes: [
         {
-          host: conf.baseUrlFor('REACT_APP_SHOWCASE_API').toString(),
+          host: 'typesense.siya-eip.com',
           port: 8108,
           protocol: 'http',
         }
