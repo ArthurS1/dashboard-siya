@@ -54,7 +54,6 @@ const Ambassador = ({ for: user }: { for: AmbassadorData }) => {
               aria-label="sauvegarder"
               variant="ghost"
               colorScheme="green"
-              onClick={() => updateLevel(user._id, level)}
               icon=<CheckIcon />
             />
           </Tooltip>
