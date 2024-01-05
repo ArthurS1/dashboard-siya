@@ -44,7 +44,7 @@ const Complaint = ({ message }: { message: UserMessage }) => {
   };
   const getAttachment = (id: number) => {
     window.open(
-      `${conf.baseUrlFor('SHOWCASE_API')}feedback/`
+      `${conf.baseUrlFor('REACT_APP_SHOWCASE_API')}feedback/`
       +
       `getImgById?email=${creds.data?.email}&`
       +
