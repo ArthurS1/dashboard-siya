@@ -8,6 +8,10 @@ Environment
   from './src/common/Environment';
 import User from './src/interfaces/User';
 
+console.warn(`For the love of god all mighty, remove the js files after
+              compiling. I wont fix the compilation because it's the end
+              of this project.`);
+
 console.log('Connecting to the mobile API');
 
 const mobileApi = useMobileApi(new Environment());
@@ -20,9 +24,9 @@ function buildTypesenseClient() {
   console.log('Connecting to typesense server');
   return new Typesense.Client({
     nodes: [{
-      host: 'localhost',
-      port: 8108,
-      protocol: 'http',
+      host: 'typesense.siya-eip.com',
+      port: 443,
+      protocol: 'https',
     }],
     apiKey: 'xyz',
     connectionTimeoutSeconds: 2,
