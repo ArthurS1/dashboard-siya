@@ -78,7 +78,7 @@ const EmailsSettings = ({ state, setState }: {
             rightIcon=<DownloadIcon />
             onClick={() => openFileSelector()}
             my={5}
-            disabled={state.sendToAllUsers}
+            isDisabled={state.sendToAllUsers}
           >Télécharger un fichier</Button>
           <Box hidden={state.sendToAllUsers || state.csv?.length === 0}>
             <Text><b>Le mail sera envoyé à:</b></Text>

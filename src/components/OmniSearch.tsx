@@ -100,6 +100,7 @@ function OmniSearch() {
   const searchClient = buildSearchClient(conf);
   const [focus, setFocus] = useState(false);
 
+  // add an error boundary ?
   return (
     <Box>
       <InstantSearch indexName="users" searchClient={searchClient}>

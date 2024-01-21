@@ -76,7 +76,7 @@ const Complaint = ({ message }: { message: UserMessage }) => {
             aria-label="document"
             variant="ghost"
             colorScheme="blue"
-            isDisabled={message.file === ''}
+            isDisabled={true}
             onClick={() => getAttachment(message.id)}
             icon=<DownloadIcon />
           />

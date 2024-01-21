@@ -90,7 +90,7 @@ const User = (
           <ModalFooter>
             <Button
               colorScheme="red"
-              disabled={emailVerification !== user.email}
+              isDisabled={emailVerification !== user.email}
               onClick={deleteUser}>
               Supprimer définitivement
             </Button>
